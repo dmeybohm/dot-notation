@@ -1,0 +1,24 @@
+{
+    "name": "zf-config/zf-config",
+    "description": "Dotted configuration array to compact Zend Framework 2 configuration arrays.",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Meybohm",
+            "email": "dmeybohm@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "ZfConfig\\":  "src/",
+            "ZfConfigTest\\": "test/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "@stable"
+    },
+    "require": {
+        "phpunit/phpunit": "3.7.28"
+    }
+}
