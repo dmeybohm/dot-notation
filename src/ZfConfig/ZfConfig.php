@@ -2,46 +2,44 @@
 
 namespace ZfConfig;
 
-use ArrayObject;
-
 /**
  * Class ZfConfig
  * @package ZfConfig
  */
-class ZfConfig extends ArrayObject
+class ZfConfig
 {
-    private $array;
-
     /**
-     * Construct a configuration from an array.
+     * Load a ZfConfig array from a file and convert it to a plain array.
      *
-     * @param array $array Array to use.
+     * @param  string $path Path to the file.
+     * @return array Array of configuration values.
      */
-    public function __construct(array $array = array())
+    public static function fromFile($path)
     {
-        $this->array = $array;
+        return self::expand(require $path);
     }
 
     /**
      * Convert the configuration to a normal PHP array, expanding the dotted keys.
      *
-     * @return array
+     * @param  array $array Array to expand.
+     * @return array The expanded array.
      */
-    public function toArray()
+    public static function expand(array $array)
     {
         $result = array();
 
-        foreach ($this->array as $key => $value)
+        foreach ($array as $key => $value)
         {
             $references = explode('.', $key);
 
             if (count($references) == 1)
             {
-                $result[$key] = $this->getValue($value);
+                $result[$key] = self::getValue($value);
             }
             else
             {
-                $this->appendDereference($result, $references, $value);
+                self::appendDereference($result, $references, $value);
             }
         }
 
@@ -56,18 +54,20 @@ class ZfConfig extends ArrayObject
      * @param mixed $value      The value the dotted key points to.
      * @return void
      */
-    protected function appendDereference(array &$result, $references, $value)
+    private static function appendDereference(array &$result, $references, $value)
     {
         $top = array_shift($references);
-        $soFar = $this->getValue($value);
-        foreach (array_reverse($references) as $ref)
+        $soFar = self::getValue($value);
+        $ref = end($references);
+        while ($ref)
         {
             $soFar = array($ref => $soFar);
+            $ref = prev($references);
         }
 
         if (isset($result[$top]))
         {
-            $result[$top] = array_merge($result[$top], $soFar);
+            $result[$top] = self::mergeArraysRecursively($result[$top], $soFar);
         }
         else
         {
@@ -81,16 +81,41 @@ class ZfConfig extends ArrayObject
      * @param mixed $value The value to get.
      * @return mixed
      */
-    public function getValue($value)
+    public static function getValue($value)
     {
         if (is_array($value))
         {
-            $recurseResult = new self($value);
-            return $recurseResult->toArray();
+            return self::expand($value);
         }
         else
         {
             return $value;
         }
+    }
+
+    /**
+     * Merge arrays recursively, appending when the keys are arrays and overriding when not.
+     *
+     * @param  array $firstArray  First array to merge.
+     * @param  array $secondArray Second array to merge.
+     * @return array The merged array.
+     */
+    private static function mergeArraysRecursively(array $firstArray, array $secondArray)
+    {
+        $result = $firstArray;
+
+        foreach ($secondArray as $key => $value)
+        {
+            if (isset($firstArray[$key]) && is_array($firstArray[$key]) && is_array($value))
+            {
+                $result[$key] = self::mergeArraysRecursively($firstArray[$key], $secondArray[$key]);
+            }
+            else
+            {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 }
