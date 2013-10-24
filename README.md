@@ -37,7 +37,6 @@ array(
 
 // Load from a file. The include path is searched:
 $array = DotNotation::fromFile('myfile.php')
-?>
 ```
 
 In myfile.php:
