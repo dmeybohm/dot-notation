@@ -6,13 +6,13 @@ for creating deeply nested arrays compactly in PHP.
 ## Installation
 
 Do:
-```php
+```sh
 php composer.phar require dmeybohm/dot-notation
 ```
 
 Then:
 
-```
+```sh
 php composer.phar install
 ```
 
@@ -151,11 +151,13 @@ array(
 
 ## Escaping
 
-If you want to include a dot inside a key name, you can escape it with a backslash:
+If you want to include a dot inside a key name, you can escape it with a backslash.
 ```php
 use Dmeybohm\DotNotation;
 $array = DotNotation::expand(array('my\.dotted\.key' => 'value'));
-var_export($array);
-// Outputs: array ('my.dotted.key' => 'value',)
+// expands to: 
+array('my.dotted.key' => 'value')
 ```
+Backslash is not treated as a special character in any other case, though. So you
+can use them in keys in places other than before a dot with impunity.
 
