@@ -59,7 +59,7 @@ return array('my.dotted.key' => 'value')
 ### Keys can be appended to and overridden
 
 Dotted keys can be specified many times in the same array, and all the values will be 
-appended to the arrays. 
+appended as long as all of the parent keys are arrays.
 
 ```php
 $array = DotNotation::expand(array(
@@ -79,8 +79,11 @@ array(
 );
 ```
 
-Keys have to consistenly be used as arrays. If you change a value to an array, it
-will be overridden by the last value used:
+If some of the parent keys in a dotted key are not arrays, they will be overridden to
+be arrays. This means values which are later in the array can override those
+that come earlier. 
+
+NOTE: this behavior may change in the future to throw an exception in this case.
 
 ```php
 $array = DotNotation::expand(array(
