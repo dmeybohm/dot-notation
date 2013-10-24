@@ -3,10 +3,10 @@
 namespace ZfConfig;
 
 /**
- * Class ZfConfig
- * @package ZfConfig
+ * Class DotNotation
+ * @package DotNotation
  */
-class ZfConfig
+class DotNotation
 {
     /**
      * Convert the configuration to a normal PHP array, expanding the dotted keys.
@@ -37,7 +37,7 @@ class ZfConfig
     }
 
     /**
-     * Load a ZfConfig array from a file and convert it to a plain array.
+     * Load a DotNotation array from a file and convert it to a plain array.
      *
      * @param  string $path Path to the file.
      * @return array Array of configuration values.

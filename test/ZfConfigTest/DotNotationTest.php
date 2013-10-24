@@ -2,9 +2,9 @@
 
 namespace ZfConfigTest;
 
-use ZfConfig\ZfConfig;
+use ZfConfig\DotNotation;
 
-class ZfConfigTest extends \PHPUnit_Framework_TestCase
+class DotNotationTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Tests that configuration can be loaded from a file.
@@ -13,7 +13,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigurationCanBeLoadedFromAFile()
     {
-        $config = ZfConfig::fromFile(__DIR__ . '/../data/test_config.php');
+        $config = DotNotation::fromFile(__DIR__ . '/../data/test_config.php');
         $this->assertInternalType('array', $config);
         $this->assertNotEmpty($config);
     }
@@ -25,7 +25,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testDotsAreExpandedToAppropriateArrayKeys()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'foo' => array(
                 'bar' => array('buzz'),
             ),
@@ -49,7 +49,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testTypicalGlobalPHPConfigurationWorks()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'db.driver' => 'Pdo',
             'db.dsn'    => 'mysql:dbname=zf2tutorial;host=localhost',
             'db.driver_options' => array(
@@ -85,7 +85,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testTypicalModuleConfigurationWorks()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'controllers.invokables' => array(
                 'Album\Controller\Album' => 'Album\Controller\AlbumController',
             ),
@@ -150,7 +150,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testKeysCanBeOverriddenWhenSpecifiedMultipleTimes()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'foo.bar.baz' => 'Foo',
             'foo.bar' => array(
                 'baz' => 'Qux'
@@ -171,7 +171,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testKeysThatAreNotArraysAreNotAppendedToWhenSpecifiedMultipleTimes()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'view_manager' => array(
                 'template_path_stack' => array(
                     'album' => __DIR__ . '/../view1',
@@ -196,7 +196,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testKeysThatHaveAnOddNumberOfBackslashesBeforeDotsAreNotExpanded_ButOneIsRemoved()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'view_manager' => array(
                 'template_path_stack' => array(
                     'album' => __DIR__ . '/../view1',
@@ -214,7 +214,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expect, $config, 'One backslash failed!');
 
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'view_manager' => array(
                 'template_path_stack' => array(
                     'album' => __DIR__ . '/../view1',
@@ -241,7 +241,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testKeysThatHaveAnEvenNumberOfBackslashesBeforeDotsAreNotExpanded_ButTheNumberIsHalved()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'view_manager' => array(
                 'template_path_stack' => array(
                     'album' => __DIR__ . '/../view1',
@@ -259,7 +259,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expect, $config, 'Two backslashes failed!');
 
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'view_manager\\' => array(
                 'template_path_stack\\' => array(
                     'album' => __DIR__ . '/../view1',
@@ -285,7 +285,7 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testBackslashesThatDoNotPreceedAPeriodInAKeyNameDoNotRequireEscaping()
     {
-        $config = ZfConfig::expand(array(
+        $config = DotNotation::expand(array(
             'loaded.classes' => array(
                 'Zend\Loader\ClassMapAutoloader' => array(
                     __DIR__ . '/autoload_classmap.php',
