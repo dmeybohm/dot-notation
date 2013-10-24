@@ -125,9 +125,7 @@ notation version is in addition to being smaller:
 
 ```php
 $array = DotNotation::expand(array(
-    'controllers.invokables' => array(
-        'Album\Controller\Album' => 'Album\Controller\AlbumController',
-    ),
+    'controllers.invokables.Album\Controller\Album' => 'Album\Controller\AlbumController',
 
     'router.routes.album' => array(
         'type'                => 'segment',
@@ -189,9 +187,7 @@ $array = DotNotation::expand(array(
     //
     // Configuration for the album controller:
     //
-    'controllers.invokables' => array(
-        'Album\Controller\Album' => 'Album\Controller\AlbumController',
-    ),
+    'controllers.invokables.Album\Controller\Album' => 'Album\Controller\AlbumController',
 
     'router.routes.album' => array(
         'type'                => 'segment',
@@ -211,9 +207,7 @@ $array = DotNotation::expand(array(
     //
     // Configuration for the book controller:
     //
-    'controllers.invokables' => array(
-        'Book\Controller\Book' => 'Book\Controller\BookController',
-    ),
+    'controllers.invokables.Book\Controller\Book' => 'Book\Controller\BookController',
 
     'router.routes.book' => array(
         'type'                => 'segment',
@@ -266,8 +260,10 @@ $array = DotNotation::expand(array(
         ),
     ),
 
-    'view_manager.template_path_stack.album' => __DIR__ . '/../view',
-    'view_manager.template_path_stack.book' => __DIR__ . '/../view',
+    'view_manager.template_path_stack' => array(
+	'album' => __DIR__ . '/../view',
+    	'book' => __DIR__ . '/../view',
+    ),
 ));
 ```
 
