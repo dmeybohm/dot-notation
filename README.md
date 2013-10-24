@@ -17,7 +17,7 @@ If you have your autoloader configured, you can just use the class. The
 interface consists of two static methods: `expand()` and `fromFile()`. Both methods
 transform the dotted notation to the equivalent expanded arrays: 
 
-### `DotNotation::expand()`
+### DotNotation::expand()
 
 Use this to expand an array.
 
@@ -34,7 +34,7 @@ array(
 );
 ```
 
-### `DotNotation::fromFile()`
+### DotNotation::fromFile()
 
 Use this to expand a file that returns an array. The include path
 is searched for the file.
