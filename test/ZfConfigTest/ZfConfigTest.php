@@ -188,4 +188,120 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expect, $config);
     }
+
+    /**
+     * Tests that keys that have backslashes before dots are not expanded.
+     *
+     * @return void
+     */
+    public function testKeysThatHaveAnOddNumberOfBackslashesBeforeDotsAreNotExpanded_ButOneIsRemoved()
+    {
+        $config = ZfConfig::expand(array(
+            'view_manager' => array(
+                'template_path_stack' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager\.template_path_stack\.album' => __DIR__ . '/../view2',
+        ));
+        $expect = array(
+            'view_manager' => array(
+                'template_path_stack' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager.template_path_stack.album' => __DIR__ . '/../view2',
+        );
+        $this->assertEquals($expect, $config, 'One backslash failed!');
+
+        $config = ZfConfig::expand(array(
+            'view_manager' => array(
+                'template_path_stack' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager\\\.template_path_stack\\\.album' => __DIR__ . '/../view2',
+        ));
+        $expect = array(
+            'view_manager' => array(
+                'template_path_stack' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager\.template_path_stack\.album' => __DIR__ . '/../view2',
+        );
+
+        $this->assertEquals($expect, $config, 'Three backslashes failed!');
+    }
+    
+    /**
+     * Tests that keys with an even number of backslashes are expanded, but the number is halved.
+     *
+     * @return void
+     */
+    public function testKeysThatHaveAnEvenNumberOfBackslashesBeforeDotsAreNotExpanded_ButTheNumberIsHalved()
+    {
+        $config = ZfConfig::expand(array(
+            'view_manager' => array(
+                'template_path_stack' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager\\.template_path_stack\\.album' => __DIR__ . '/../view2',
+        ));
+        $expect = array(
+            'view_manager' => array(
+                'template_path_stack' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager.template_path_stack.album' => __DIR__ . '/../view2',
+        );
+        $this->assertEquals($expect, $config, 'Two backslashes failed!');
+
+        $config = ZfConfig::expand(array(
+            'view_manager\\' => array(
+                'template_path_stack\\' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager\\\\.template_path_stack\\\\.album' => __DIR__ . '/../view2',
+        ));
+        $expect = array(
+            'view_manager\\' => array(
+                'template_path_stack\\' => array(
+                    'album' => __DIR__ . '/../view1',
+                ),
+            ),
+            'view_manager\\.template_path_stack\\.album' => __DIR__ . '/../view2',
+        );
+        $this->assertEquals($expect, $config, 'Four backslashes failed!');
+    }
+
+    /**
+     * Tests that backslashes that do not preceed a period in a key name do not require escaping.
+     *
+     * @return void
+     */
+    public function testBackslashesThatDoNotPreceedAPeriodInAKeyNameDoNotRequireEscaping()
+    {
+        $config = ZfConfig::expand(array(
+            'loaded.classes' => array(
+                'Zend\Loader\ClassMapAutoloader' => array(
+                    __DIR__ . '/autoload_classmap.php',
+                ),
+            )
+        ));
+        $expect = array(
+            'loaded' => array(
+                'classes' => array(
+                    'Zend\Loader\ClassMapAutoloader' => array(
+                        __DIR__ . '/autoload_classmap.php',
+                    )
+                )
+            )
+        );
+        $this->assertEquals($expect, $config, "Backslashes are not being left alone when not before period!");
+    }
+    
 }

@@ -9,17 +9,6 @@ namespace ZfConfig;
 class ZfConfig
 {
     /**
-     * Load a ZfConfig array from a file and convert it to a plain array.
-     *
-     * @param  string $path Path to the file.
-     * @return array Array of configuration values.
-     */
-    public static function fromFile($path)
-    {
-        return self::expand(require $path);
-    }
-
-    /**
      * Convert the configuration to a normal PHP array, expanding the dotted keys.
      *
      * @param  array $array Array to expand.
@@ -31,19 +20,31 @@ class ZfConfig
 
         foreach ($array as $key => $value)
         {
-            $references = explode('.', $key);
+            $references = self::expandKey($key);
 
             if (count($references) == 1)
             {
+                $key = $references[0];
                 $result[$key] = self::getValue($value);
             }
             else
             {
-                self::appendDereference($result, $references, $value);
+                self::dereferenceDots($result, $references, $value);
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Load a ZfConfig array from a file and convert it to a plain array.
+     *
+     * @param  string $path Path to the file.
+     * @return array Array of configuration values.
+     */
+    public static function fromFile($path)
+    {
+        return self::expand(require $path);
     }
 
     /**
@@ -54,34 +55,69 @@ class ZfConfig
      * @param mixed $value      The value the dotted key points to.
      * @return void
      */
-    private static function appendDereference(array &$result, $references, $value)
+    private static function dereferenceDots(array &$result, array $references, $value)
     {
         $top = array_shift($references);
-        $soFar = self::getValue($value);
+        $values = self::getValue($value);
+
         $ref = end($references);
         while ($ref)
         {
-            $soFar = array($ref => $soFar);
+            $values = array($ref => $values);
             $ref = prev($references);
         }
 
         if (isset($result[$top]))
         {
-            $result[$top] = self::mergeArraysRecursively($result[$top], $soFar);
+            $result[$top] = self::mergeArraysRecursively($result[$top], $values);
         }
         else
         {
-            $result[$top] = $soFar;
+            $result[$top] = $values;
         }
     }
 
+    /**
+     * Expand a key into an array of references.
+     *
+     * @param  string $key Key to expand.
+     * @return array Array of references.
+     */
+    private static function expandKey($key)
+    {
+        $result = array();
+        $hold   = "";
+
+        $references = explode(".", $key);
+        $last = count($references) - 1;
+        foreach ($references as $i => $reference)
+        {
+            if ($reference[strlen($reference) - 1] === '\\' &&
+                $i < $last)
+            {
+                $hold .= substr($reference, 0, -1) . ".";
+            }
+            else if (!empty($hold))
+            {
+                $result[] = $hold . $reference;
+                $hold = "";
+            }
+            else
+            {
+                $result[] = $reference;
+            }
+        }
+
+        return $result;
+    }
+    
     /**
      * Get a value and recursively resolve exploded references.
      *
      * @param mixed $value The value to get.
      * @return mixed
      */
-    public static function getValue($value)
+    private static function getValue($value)
     {
         if (is_array($value))
         {
