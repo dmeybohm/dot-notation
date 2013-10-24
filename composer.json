@@ -1,8 +1,11 @@
 {
     "name": "dmeybohm/dot-notation",
+    "type": "library",
     "description": "MongoDB-like dot notation for arrays.",
     "minimum-stability": "dev",
+    "keywords": [ "config", "mongo", "array", "configuration" ],
     "license": "MIT",
+    "homepage": "http://github.com/dmeybohm/dot-notation",
     "authors": [
         {
             "name": "David Meybohm",
