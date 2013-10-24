@@ -1,6 +1,6 @@
 {
-    "name": "zf-config/zf-config",
-    "description": "Dotted configuration array to compact Zend Framework 2 configuration arrays.",
+    "name": "dmeybohm/dot-notation",
+    "description": "MongoDB-like dot notation for arrays.",
     "minimum-stability": "dev",
     "license": "MIT",
     "authors": [

@@ -127,6 +127,8 @@ class DotNotation
 
     /**
      * Merge arrays recursively, appending when the keys are arrays and overriding when not.
+     * This is used instead of array_merge_recursive since that will turn duplicated non-array
+     * values into arrays.
      *
      * @param  array $firstArray  First array to merge.
      * @param  array $secondArray Second array to merge.
