@@ -229,3 +229,42 @@ $array = DotNotation::expand(array(
     'view_manager.template_path_stack.book' => __DIR__ . '/../view',
 ));
 ```
+
+It can also be done the more compact way:
+
+```php
+$array = DotNotation::expand(array(
+    'controllers.invokables' => array(
+        'Album\Controller\Album' => 'Album\Controller\AlbumController',
+        'Book\Controller\Book'   => 'Book\Controller\BookController',
+    ),
+
+    'router.routes.album' => array(
+        'type'                => 'segment',
+        'options.route'       => '/album[/:action][/:id]',
+        'options.constraints' => array(
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id'     => '[0-9]+',
+        ),
+        'options.defaults' => array(
+            'controller' => 'Album\Controller\Album',
+            'action'     => 'index',
+        ),
+    ),
+    'router.routes.book' => array(
+        'type'                => 'segment',
+        'options.route'       => '/book[/:action][/:id]',
+        'options.constraints' => array(
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id'     => '[0-9]+',
+        ),
+        'options.defaults' => array(
+            'controller' => 'Book\Controller\Book',
+            'action'     => 'index',
+        ),
+    ),
+
+    'view_manager.template_path_stack.album' => __DIR__ . '/../view',
+    'view_manager.template_path_stack.book' => __DIR__ . '/../view',
+));
+```
