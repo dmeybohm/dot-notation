@@ -22,6 +22,9 @@ If you have your autoloader configured, you can just use the class. The
 interface consists of two static methods: expand() and fromFile(). Both methods
 transform the dotted notation to the equivalent expanded arrays: 
 
+### DotNotation::expand()
+
+Use this to expand an array.
 ```php
 <?php
 use Dmeybohm\DotNotation;
@@ -34,19 +37,27 @@ array(
          )
      )
 );
+?>
+```
 
+### DotNotation::fromFile()
+
+Use this to expand a file that returns an array. The include path
+is searched for the file.
+
+```php
 // Load from a file. The include path is searched:
 $array = DotNotation::fromFile('myfile.php')
 ```
 
 In myfile.php:
+
 ```php
 <?php
 return array('my.dotted.key' => 'value')
 ```
 
-Note that the fromFile method requires that the included file return the
-array that is to be expanded.
+### Keys can be appended to and overridden
 
 Dotted keys can be specified many times in the same array, and all the values will be 
 appended to the arrays. 
@@ -68,6 +79,7 @@ array(
 );
 
 ```
+
 Keys have to consistenly be used as arrays. If you change a value to an array, it
 will be overridden by the last value used:
 
@@ -88,6 +100,8 @@ array(
 );
 
 ```
+### Zend Framework 2 configuration example
+
 Here's another example from inside Zend Framework 2 configuration files
 where the arrays are deeply nested. Note how much more readable the
 dot notation version is in addition to being smaller:
@@ -148,7 +162,7 @@ array(
 );
 ```
 
-## Escaping
+### Escaping dot to include it in keys
 
 If you want to include a dot inside a key name, you can escape it with a backslash.
 ```php
