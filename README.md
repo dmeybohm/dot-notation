@@ -107,12 +107,6 @@ where the arrays are deeply nested. Note how much more readable the
 dot notation version is in addition to being smaller:
 ```php
 $array = DotNotation::expand(array(
-    'view_manager' => array(
-        'template_path_stack' => array(
-            'album' => __DIR__ . '/../view',
-        ),
-    ),
-
     'controllers.invokables' => array(
         'Album\Controller\Album' => 'Album\Controller\AlbumController',
     ),
