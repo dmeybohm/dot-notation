@@ -261,8 +261,8 @@ $array = DotNotation::expand(array(
     ),
 
     'view_manager.template_path_stack' => array(
-	'album' => __DIR__ . '/../view',
-    	'book' => __DIR__ . '/../view',
+        'album' => __DIR__ . '/../view',
+        'book' => __DIR__ . '/../view',
     ),
 ));
 ```
