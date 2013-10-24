@@ -3,7 +3,7 @@
 <phpunit bootstrap="bootstrap.php">
     <testsuites>
         <testsuite name="zf-config">
-            <directory>./ZfConfigTest</directory>
+            <directory>./Dmeybohm</directory>
         </testsuite>
     </testsuites>
 </phpunit>

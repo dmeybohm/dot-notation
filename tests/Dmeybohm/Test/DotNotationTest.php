@@ -1,6 +1,6 @@
 <?php
 
-namespace DmeybohmTest;
+namespace Dmeybohm\Test;
 
 use Dmeybohm\DotNotation;
 
@@ -13,7 +13,7 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
      */
     public function testConfigurationCanBeLoadedFromAFile()
     {
-        $config = DotNotation::fromFile(__DIR__ . '/../data/test_config.php');
+        $config = DotNotation::fromFile(__DIR__ . '/../../data/test_config.php');
         $this->assertInternalType('array', $config);
         $this->assertNotEmpty($config);
     }
