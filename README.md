@@ -1,29 +1,23 @@
 # Dot Notation
 
-This supports a syntax similar to MongoDB's dot notation http://docs.mongodb.org/manual/core/document/#dot-notation
-for creating deeply nested arrays compactly in PHP.
+This supports a syntax similar to [MongoDB's dot notation][1] for creating
+deeply nested arrays compactly in PHP.
 
 ## Installation
 
 Do:
 
-```sh
-php composer.phar require dmeybohm/dot-notation
-```
-
-Then:
-
-```sh
-php composer.phar install
+```bash
+php composer.phar require dmeybohm/dot-notation:dev-master
 ```
 
 ## Usage
 
 If you have your autoloader configured, you can just use the class. The
-interface consists of two static methods: expand() and fromFile(). Both methods
+interface consists of two static methods: `expand()` and `fromFile()`. Both methods
 transform the dotted notation to the equivalent expanded arrays: 
 
-### DotNotation::expand()
+### `DotNotation::expand()`
 
 Use this to expand an array.
 
@@ -40,7 +34,7 @@ array(
 );
 ```
 
-### DotNotation::fromFile()
+### `DotNotation::fromFile()`
 
 Use this to expand a file that returns an array. The include path
 is searched for the file.
@@ -50,7 +44,7 @@ is searched for the file.
 $array = DotNotation::fromFile('myfile.php')
 ```
 
-In myfile.php:
+In `myfile.php`:
 
 ```php
 <?php
@@ -115,11 +109,11 @@ Backslash is not treated as a special character in any other case, though. So yo
 can use them in keys as long as it doesn't preceed a dot. Neither backslashes nor dots
 in values are transformed in any way, either.
 
-## Zend Framework 2 configuration example
+## Zend Framework 2 Configuration Example
 
-Here's another example from inside Zend Framework 2 configuration files
-where the arrays are deeply nested. Note how much more readable the
-dot notation version is in addition to being smaller:
+Here's another example from inside the example [Zend Framework 2][2] configuration
+files where the arrays are deeply nested. Note how much more readable the dot
+notation version is in addition to being smaller:
 
 ```php
 $array = DotNotation::expand(array(
@@ -268,3 +262,6 @@ $array = DotNotation::expand(array(
     'view_manager.template_path_stack.book' => __DIR__ . '/../view',
 ));
 ```
+
+[1]: http://docs.mongodb.org/manual/core/document/#dot-notation
+[2]: http://framework.zend.com/
