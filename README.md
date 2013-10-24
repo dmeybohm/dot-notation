@@ -100,7 +100,22 @@ array(
 );
 ```
 
-### Zend Framework 2 configuration example
+### Escaping dot to include it in keys
+
+If you want to include a dot inside a key name, you can escape it with a backslash.
+
+```php
+use Dmeybohm\DotNotation;
+$array = DotNotation::expand(array('my\.dotted\.key' => 'value'));
+// expands to: 
+array('my.dotted.key' => 'value')
+```
+
+Backslash is not treated as a special character in any other case, though. So you
+can use them in keys as long as it doesn't preceed a dot. Neither backslashes nor dots
+in values are transformed in any way, either.
+
+## Zend Framework 2 configuration example
 
 Here's another example from inside Zend Framework 2 configuration files
 where the arrays are deeply nested. Note how much more readable the
@@ -162,17 +177,3 @@ array(
 );
 ```
 
-### Escaping dot to include it in keys
-
-If you want to include a dot inside a key name, you can escape it with a backslash.
-
-```php
-use Dmeybohm\DotNotation;
-$array = DotNotation::expand(array('my\.dotted\.key' => 'value'));
-// expands to: 
-array('my.dotted.key' => 'value')
-```
-
-Backslash is not treated as a special character in any other case, though. So you
-can use them in keys as long as it doesn't preceed a dot. Neither backslashes nor dots
-in values are transformed in any way, either.
