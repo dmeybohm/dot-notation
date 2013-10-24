@@ -92,7 +92,7 @@ Here's another example from inside Zend Framework 2 configuration files
 where the arrays are deeply nested. Note how much more readable the
 dot notation version is in addition to being smaller:
 ```php
-return array(
+$array = DotNotation::expand(array(
     'view_manager' => array(
         'template_path_stack' => array(
             'album' => __DIR__ . '/../view',
@@ -117,7 +117,7 @@ return array(
     ),
 
     'view_manager.template_path_stack.album' => __DIR__ . '/../view',
-);
+));
 
 // Produces:
 array(

@@ -16,8 +16,5 @@
     },
     "require-dev": {
         "phpunit/phpunit": "@stable"
-    },
-    "require": {
-        "phpunit/phpunit": "3.7.28"
     }
 }
