@@ -177,3 +177,54 @@ array(
 );
 ```
 
+Appending keys all together makes it possible to have groups of related
+configuration that can be grouped together into sections instead of having
+one place for all your controllers, another for all your routes, and so on:
+
+```php
+$array = DotNotation::expand(array(
+    //
+    // Configuration for the album controller:
+    //
+    'controllers.invokables' => array(
+        'Album\Controller\Album' => 'Album\Controller\AlbumController',
+    ),
+
+    'router.routes.album' => array(
+        'type'                => 'segment',
+        'options.route'       => '/album[/:action][/:id]',
+        'options.constraints' => array(
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id'     => '[0-9]+',
+        ),
+        'options.defaults' => array(
+            'controller' => 'Album\Controller\Album',
+            'action'     => 'index',
+        ),
+    ),
+
+    'view_manager.template_path_stack.album' => __DIR__ . '/../view',
+
+    //
+    // Configuration for the book controller:
+    //
+    'controllers.invokables' => array(
+        'Book\Controller\Book' => 'book\Controller\BookController',
+    ),
+
+    'router.routes.book' => array(
+        'type'                => 'segment',
+        'options.route'       => '/book[/:action][/:id]',
+        'options.constraints' => array(
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id'     => '[0-9]+',
+        ),
+        'options.defaults' => array(
+            'controller' => 'Book\Controller\Book',
+            'action'     => 'index',
+        ),
+    ),
+
+    'view_manager.template_path_stack.book' => __DIR__ . '/../view',
+));
+```
