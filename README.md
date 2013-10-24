@@ -6,6 +6,7 @@ for creating deeply nested arrays compactly in PHP.
 ## Installation
 
 Do:
+
 ```sh
 php composer.phar require dmeybohm/dot-notation
 ```
@@ -25,8 +26,8 @@ transform the dotted notation to the equivalent expanded arrays:
 ### DotNotation::expand()
 
 Use this to expand an array.
+
 ```php
-<?php
 use Dmeybohm\DotNotation;
 $array = DotNotation::expand(array('my.dotted.key' => 'value'));
 // returns an array that looks like:
@@ -37,7 +38,6 @@ array(
          )
      )
 );
-?>
 ```
 
 ### DotNotation::fromFile()
@@ -61,6 +61,7 @@ return array('my.dotted.key' => 'value')
 
 Dotted keys can be specified many times in the same array, and all the values will be 
 appended to the arrays. 
+
 ```php
 $array = DotNotation::expand(array(
     'my.dotted.key' => 'value1',
@@ -77,7 +78,6 @@ array(
         )
     )
 );
-
 ```
 
 Keys have to consistenly be used as arrays. If you change a value to an array, it
@@ -98,13 +98,14 @@ array(
         )
     )
 );
-
 ```
+
 ### Zend Framework 2 configuration example
 
 Here's another example from inside Zend Framework 2 configuration files
 where the arrays are deeply nested. Note how much more readable the
 dot notation version is in addition to being smaller:
+
 ```php
 $array = DotNotation::expand(array(
     'controllers.invokables' => array(
@@ -153,18 +154,24 @@ array(
              ),
          ),
      ),
+    'view_manager' => array(
+        'template_path_stack' => array(
+            'album' => __DIR__ . '/../view',
+        ),
+    ),
 );
 ```
 
 ### Escaping dot to include it in keys
 
 If you want to include a dot inside a key name, you can escape it with a backslash.
+
 ```php
 use Dmeybohm\DotNotation;
 $array = DotNotation::expand(array('my\.dotted\.key' => 'value'));
 // expands to: 
 array('my.dotted.key' => 'value')
 ```
+
 Backslash is not treated as a special character in any other case, though. So you
 can use them in keys in places other than before a dot with impunity.
-
