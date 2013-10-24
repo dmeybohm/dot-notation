@@ -174,4 +174,5 @@ array('my.dotted.key' => 'value')
 ```
 
 Backslash is not treated as a special character in any other case, though. So you
-can use them in keys in places other than before a dot with impunity.
+can use them in keys as long as it doesn't preceed a dot. Neither backslashes nor dots
+in values are transformed in any way, either.
