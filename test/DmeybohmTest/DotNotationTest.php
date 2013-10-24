@@ -1,8 +1,8 @@
 <?php
 
-namespace ZfConfigTest;
+namespace DmeybohmTest;
 
-use ZfConfig\DotNotation;
+use Dmeybohm\DotNotation;
 
 class DotNotationTest extends \PHPUnit_Framework_TestCase
 {

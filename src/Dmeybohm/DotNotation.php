@@ -1,11 +1,7 @@
 <?php
 
-namespace ZfConfig;
+namespace Dmeybohm;
 
-/**
- * Class DotNotation
- * @package DotNotation
- */
 class DotNotation
 {
     /**
