@@ -13,16 +13,21 @@ php composer.phar require dmeybohm/dot-notation:dev-master
 
 ## Usage
 
-If you have your autoloader configured, you can just use the class. The
-interface consists of two static methods: `expand()` and `fromFile()`. Both methods
-transform the dotted notation to the equivalent expanded arrays: 
+If you have your autoloader configured, you can just use the class. 
+
+```php
+<?php
+use Dmeybohm\DotNotation;
+```
+
+The interface consists of two static methods: `expand()` and `fromFile()`. Both
+methods transform the dotted notation to the equivalent expanded arrays: 
 
 ### DotNotation::expand()
 
 Use this to expand an array.
 
 ```php
-use Dmeybohm\DotNotation;
 $array = DotNotation::expand(array('my.dotted.key' => 'value'));
 // returns an array that looks like:
 array(
