@@ -303,5 +303,4 @@ class ZfConfigTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expect, $config, "Backslashes are not being left alone when not before period!");
     }
-    
 }
