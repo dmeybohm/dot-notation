@@ -178,8 +178,9 @@ array(
 ```
 
 Appending keys all together makes it possible to have groups of related
-configuration that can be grouped together into sections instead of having
-one place for all your controllers, another for all your routes, and so on:
+configuration that can be grouped together into sections. Otherwise, you'd have
+to have one place for all your controllers configuration, another for all your
+routes, and so on:
 
 ```php
 $array = DotNotation::expand(array(
@@ -209,7 +210,7 @@ $array = DotNotation::expand(array(
     // Configuration for the book controller:
     //
     'controllers.invokables' => array(
-        'Book\Controller\Book' => 'book\Controller\BookController',
+        'Book\Controller\Book' => 'Book\Controller\BookController',
     ),
 
     'router.routes.book' => array(
