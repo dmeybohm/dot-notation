@@ -100,7 +100,7 @@ $array = DotNotation::expand(array(
     'controllers.invokables' => array('Book\Controller\Book'),
     'controllers.invokables' => array('Album\Controller\Album'),
 ));
-// array('controllers' => array('invokables' => 'Album\Controller\Album'));
+// array('controllers' => array('invokables' => array('Album\Controller\Album')));
 ```
 
 If you want to append to arrays, you have to make sure they are not the last
