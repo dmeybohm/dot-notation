@@ -83,6 +83,14 @@ If some of the parent keys in a dotted key are not arrays, an exception
 will be thrown.  An exception is also thrown if you try to change an array
 key to a non-array.
 
+```php
+// this throws an exception of \Dmeybohm\DotNotation\KeyAlreadyExistsException
+$array = DotNotation::expand(array(
+    'my.dotted.key' => 'value1',
+    'my.dotted.key.subkey' => 'value2'
+));
+```
+
 This should catch most mistakes when using the dot notation, but note that
 PHP itself will happily override keys in the same array. So, the following
 will not throw an error:
@@ -93,25 +101,6 @@ $array = DotNotation::expand(array(
     'controllers.invokables' => 'Album\Controller\Album',
 ));
 // array('controllers' => array('invokables' => 'Album\Controller\Album'));
-```
-
-NOTE: this behavior may change in the future to throw an exception in this case.
-
-```php
-$array = DotNotation::expand(array(
-    'my.dotted.key' => 'value1',
-    'my.dotted.key.subkey' => 'value2'
-));
-// expands to:
-array(
-    'my' => array(
-        'dotted' => array(
-            'key'   =>  array(
-                'subkey' => 'value2'
-            )
-        )
-    )
-);
 ```
 
 ### Escaping dot to include it in keys
