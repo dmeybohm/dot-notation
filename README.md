@@ -97,11 +97,14 @@ will not throw an error:
 
 ```php
 $array = DotNotation::expand(array(
-    'controllers.invokables' => 'Book\Controller\Book',
-    'controllers.invokables' => 'Album\Controller\Album',
+    'controllers.invokables' => array('Book\Controller\Book'),
+    'controllers.invokables' => array('Album\Controller\Album'),
 ));
 // array('controllers' => array('invokables' => 'Album\Controller\Album'));
 ```
+
+If you want to append to arrays, you have to make sure they are not the last
+element in a dotted key.
 
 ### Escaping dot to include it in keys
 
