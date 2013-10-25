@@ -81,7 +81,7 @@ array(
 
 If some of the parent keys in a dotted key are not arrays, an exception
 will be thrown.  An exception is also thrown if you try to change an array
-key to a non-array.
+key to a non-array with a dotted key.
 
 ```php
 // this throws an exception of \Dmeybohm\DotNotation\KeyAlreadyExistsException
