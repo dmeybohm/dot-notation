@@ -79,9 +79,8 @@ array(
 );
 ```
 
-If some of the parent keys in a dotted key are not arrays, they will be overridden to
-be arrays. This means values which are later in the array can override those
-that come earlier. 
+If some of the parent keys in a dotted key are not arrays, whichever key comes
+last will take precendence.
 
 NOTE: this behavior may change in the future to throw an exception in this case.
 
@@ -120,8 +119,7 @@ in values are transformed in any way, either.
 ## Zend Framework 2 Configuration Example
 
 Here's another example from inside the example [Zend Framework 2][2] configuration
-files where the arrays are deeply nested. Note how much more readable the dot
-notation version is in addition to being smaller:
+files where the arrays are deeply nested. 
 
 ```php
 $array = DotNotation::expand(array(
@@ -142,9 +140,12 @@ $array = DotNotation::expand(array(
 
     'view_manager.template_path_stack.album' => __DIR__ . '/../view',
 ));
+```
 
-// Produces:
-array(
+Note how much more readable the dot notation version is in addition to being smaller:
+
+```php
+return array(
      'controllers' => array(
          'invokables' => array(
              'Album\Controller\Album' => 'Album\Controller\AlbumController',
