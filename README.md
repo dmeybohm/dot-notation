@@ -21,7 +21,7 @@ use Dmeybohm\DotNotation;
 ```
 
 The interface consists of two static methods: `expand()` and `fromFile()`. Both
-methods transform the dotted notation to the equivalent expanded arrays: 
+methods transform the dotted notation to the equivalent expanded arrays.
 
 ### DotNotation::expand()
 
@@ -79,9 +79,8 @@ array(
 );
 ```
 
-If some of the parent keys in a dotted key are not arrays, an exception
-will be thrown.  An exception is also thrown if you try to change an array
-key to a non-array with a dotted key.
+Switching from a non-array type to an array or vice-versa inside a
+dotted key throws an exception.
 
 ```php
 // this throws an exception of \Dmeybohm\DotNotation\KeyAlreadyExistsException
@@ -91,7 +90,7 @@ $array = DotNotation::expand(array(
 ));
 ```
 
-This should catch most mistakes when using the dot notation, but note that
+This should catch some mistakes when using the dot notation, but note that
 PHP itself will happily override keys in the same array. So, the following
 will not throw an error:
 
@@ -100,11 +99,9 @@ $array = DotNotation::expand(array(
     'controllers.invokables' => array('Book\Controller\Book'),
     'controllers.invokables' => array('Album\Controller\Album'),
 ));
-// array('controllers' => array('invokables' => array('Album\Controller\Album')));
+// expands to:
+array('controllers' => array('invokables' => array('Album\Controller\Album')));
 ```
-
-If you want to append to arrays, you have to make sure they are not the last
-element in a dotted key.
 
 ### Escaping dot to include it in keys
 
