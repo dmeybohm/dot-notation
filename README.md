@@ -56,7 +56,7 @@ In `myfile.php`:
 return array('my.dotted.key' => 'value')
 ```
 
-### Keys can be appended to and overridden
+### Keys can be appended to
 
 Dotted keys can be specified many times in the same array, and all the values will be 
 appended as long as all of the parent keys are arrays.
@@ -79,6 +79,8 @@ array(
 );
 ```
 
+### Overriding keys throws an exception
+
 Switching from a non-array type to an array or vice-versa inside a
 dotted key throws an exception.
 
@@ -92,7 +94,7 @@ $array = DotNotation::expand(array(
 
 This should catch some mistakes when using the dot notation, but note that
 PHP itself will happily override keys in the same array. So, the following
-will not throw an error:
+will not throw an error, but silently override the first key:
 
 ```php
 $array = DotNotation::expand(array(
