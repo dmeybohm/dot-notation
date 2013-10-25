@@ -198,7 +198,7 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
      */
     public function testOverridingNonArrayKeysThrowsAnException()
     {
-        $config = DotNotation::expand(array(
+        DotNotation::expand(array(
             'my.dotted.key' => 'value1',
             'my.dotted.key.other' => 'value2'
         ));
@@ -215,7 +215,7 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
         $caught = false;
         try
         {
-            $config = DotNotation::expand(array(
+            DotNotation::expand(array(
                 'my.dotted.key.other' => 'value2',
                 'my.dotted.key' => 'value1',
             ));
@@ -239,7 +239,7 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
         $caught = false;
         try
         {
-            $config = DotNotation::expand(array(
+            DotNotation::expand(array(
                 'my.dotted.key' => 'value1',
                 'my.dotted.key.other' => 'value2'
             ));
