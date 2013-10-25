@@ -3,6 +3,7 @@
 namespace Dmeybohm\Test;
 
 use Dmeybohm\DotNotation;
+use Dmeybohm\DotNotation\KeyAlreadyExistsException;
 
 class DotNotationTest extends \PHPUnit_Framework_TestCase
 {
@@ -148,7 +149,7 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    public function testKeysCanBeOverriddenWhenSpecifiedMultipleTimes()
+    public function testExceptionIsThrownWhenKeysAlreadySpecifiedAsNonArraysAreOverridden()
     {
         $config = DotNotation::expand(array(
             'foo.bar.baz' => 'Foo',
@@ -187,6 +188,69 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
             ),
         );
         $this->assertEquals($expect, $config);
+    }
+
+    /**
+     * Tests that overriding non-array keys throws an exception.
+     *
+     * @expectedException \Dmeybohm\DotNotation\KeyAlreadyExistsException
+     * @return void
+     */
+    public function testOverridingNonArrayKeysThrowsAnException()
+    {
+        $config = DotNotation::expand(array(
+            'my.dotted.key' => 'value1',
+            'my.dotted.key.other' => 'value2'
+        ));
+        $this->fail("Exception was not thrown!");
+    }
+
+    /**
+     * Tests that changing a key to a non-array with a dotted key throws an exception.
+     *
+     * @return void
+     */
+    public function testChangingAKeyToANonArrayWithADottedKeyThrowsAnException()
+    {
+        $caught = false;
+        try
+        {
+            $config = DotNotation::expand(array(
+                'my.dotted.key.other' => 'value2',
+                'my.dotted.key' => 'value1',
+            ));
+        }
+        catch (KeyAlreadyExistsException $exception)
+        {
+            $caught = true;
+            $this->assertContains('my.dotted.key', $exception->getMessage());
+            $this->assertContains('from an array', $exception->getMessage());
+        }
+        $this->assertTrue($caught, 'Exception was not thrown!');
+    }
+
+    /**
+     * Tests that the key path is included in the key path when it is overridden.
+     *
+     * @return void
+     */
+    public function testKeyPathIsIncludedInKeyAlreadyExistsException()
+    {
+        $caught = false;
+        try
+        {
+            $config = DotNotation::expand(array(
+                'my.dotted.key' => 'value1',
+                'my.dotted.key.other' => 'value2'
+            ));
+        }
+        catch (KeyAlreadyExistsException $exception)
+        {
+            $caught = true;
+            $this->assertContains('my.dotted.key', $exception->getMessage());
+            $this->assertContains('from a non-array', $exception->getMessage());
+        }
+        $this->assertTrue($caught, 'Exception was not thrown!');
     }
 
     /**

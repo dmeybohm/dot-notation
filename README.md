@@ -7,7 +7,7 @@ deeply nested arrays compactly in PHP.
 
 Do:
 
-```bash
+```
 php composer.phar require dmeybohm/dot-notation:dev-master
 ```
 
@@ -79,8 +79,21 @@ array(
 );
 ```
 
-If some of the parent keys in a dotted key are not arrays, whichever key comes
-last will take precendence.
+If some of the parent keys in a dotted key are not arrays, an exception
+will be thrown.  An exception is also thrown if you try to change an array
+key to a non-array.
+
+This should catch most mistakes when using the dot notation, but note that
+PHP itself will happily override keys in the same array. So, the following
+will not throw an error:
+
+```php
+$array = DotNotation::expand(array(
+    'controllers.invokables' => 'Book\Controller\Book',
+    'controllers.invokables' => 'Album\Controller\Album',
+));
+// array('controllers' => array('invokables' => 'Album\Controller\Album'));
+```
 
 NOTE: this behavior may change in the future to throw an exception in this case.
 

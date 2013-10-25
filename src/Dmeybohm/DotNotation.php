@@ -65,7 +65,7 @@ class DotNotation
 
         if (isset($result[$top]))
         {
-            $result[$top] = self::mergeArraysRecursively($result[$top], $values);
+            $result[$top] = self::mergeArraysRecursively($result[$top], $values, array($top));
         }
         else
         {
@@ -132,17 +132,39 @@ class DotNotation
      *
      * @param  array $firstArray  First array to merge.
      * @param  array $secondArray Second array to merge.
+     * @param  array $parentKeys  (Optional) Key path to parents used for error reporting.
      * @return array The merged array.
+     * @throws \Dmeybohm\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
+     * array.
      */
-    private static function mergeArraysRecursively(array $firstArray, array $secondArray)
+    private static function mergeArraysRecursively(array $firstArray, array $secondArray, array $parentKeys = array())
     {
         $result = $firstArray;
 
         foreach ($secondArray as $key => $value)
         {
-            if (isset($firstArray[$key]) && is_array($firstArray[$key]) && is_array($value))
+            if (isset($firstArray[$key]))
             {
-                $result[$key] = self::mergeArraysRecursively($firstArray[$key], $secondArray[$key]);
+                $oneIsArray = is_array($firstArray[$key]);
+                $twoIsArray = is_array($value);
+
+                if ($oneIsArray xor $twoIsArray)
+                {
+                    $parentKeyComplete = join('.', array_merge($parentKeys, array($key)));
+                    $message = "Inconsistent type in dotted key: Attempting to change key '{$parentKeyComplete}' ";
+                    $message .= ($oneIsArray ? "from an array to non-array" : "from a non-array to an array");
+                    throw new DotNotation\KeyAlreadyExistsException($message);
+                }
+                else if ($oneIsArray && $twoIsArray)
+                {
+                    array_push($parentKeys, $key);
+                    $result[$key] = self::mergeArraysRecursively($firstArray[$key], $secondArray[$key], $parentKeys);
+                    array_pop($parentKeys);
+                }
+                else
+                {
+                    $result[$key] = $value;
+                }
             }
             else
             {
