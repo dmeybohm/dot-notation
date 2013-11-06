@@ -102,30 +102,6 @@ Here's another example from inside the example [Zend Framework 2][2] configurati
 files where the arrays are deeply nested. 
 
 ```php
-$array = DotNotation::expand(array(
-    'controllers.invokables.Album\Controller\Album' => 'Album\Controller\AlbumController',
-
-    'router.routes.album' => array(
-        'type'                => 'segment',
-        'options.route'       => '/album[/:action][/:id]',
-        'options.constraints' => array(
-            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-            'id'     => '[0-9]+',
-        ),
-        'options.defaults' => array(
-            'controller' => 'Album\Controller\Album',
-            'action'     => 'index',
-        ),
-    ),
-
-    'view_manager.template_path_stack.album' => __DIR__ . '/../view',
-));
-```
-
-Compared with the expanded version, note how much more readable the dot notation
-version is in addition to being smaller:
-
-```php
 return array(
      'controllers' => array(
          'invokables' => array(
@@ -157,6 +133,30 @@ return array(
         ),
     ),
 );
+```
+
+Compared with the expanded version, note how much more readable the dot notation
+version of the same configuration is in addition to being smaller:
+
+```php
+$array = DotNotation::expand(array(
+    'controllers.invokables.Album\Controller\Album' => 'Album\Controller\AlbumController',
+
+    'router.routes.album' => array(
+        'type'                => 'segment',
+        'options.route'       => '/album[/:action][/:id]',
+        'options.constraints' => array(
+            'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+            'id'     => '[0-9]+',
+        ),
+        'options.defaults' => array(
+            'controller' => 'Album\Controller\Album',
+            'action'     => 'index',
+        ),
+    ),
+
+    'view_manager.template_path_stack.album' => __DIR__ . '/../view',
+));
 ```
 
 Appending keys all together makes it possible to have groups of related
