@@ -8,7 +8,7 @@ deeply nested arrays compactly in PHP.
 Do:
 
 ```
-php composer.phar require best/dot-notation:dev-master
+composer require best/dot-notation:dev-master
 ```
 
 ## Usage
