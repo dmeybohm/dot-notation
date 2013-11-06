@@ -33,17 +33,6 @@ class DotNotation
     }
 
     /**
-     * Load a DotNotation array from a file and convert it to a plain array.
-     *
-     * @param  string $path Path to the file.
-     * @return array Array of configuration values.
-     */
-    public static function fromFile($path)
-    {
-        return self::expand(require $path);
-    }
-
-    /**
      * Dereference an array of keys and append the result to an array.
      *
      * @param array &$result    The resulting array to append to.

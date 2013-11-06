@@ -8,18 +8,6 @@ use Best\DotNotation\KeyAlreadyExistsException;
 class DotNotationTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Tests that configuration can be loaded from a file.
-     *
-     * @return void
-     */
-    public function testConfigurationCanBeLoadedFromAFile()
-    {
-        $config = DotNotation::fromFile(__DIR__ . '/../../data/test_config.php');
-        $this->assertInternalType('array', $config);
-        $this->assertNotEmpty($config);
-    }
-    
-    /**
      * Tests that dots are expanded to appropriate array keys.
      *
      * @return void
