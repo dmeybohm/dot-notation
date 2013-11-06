@@ -122,7 +122,8 @@ $array = DotNotation::expand(array(
 ));
 ```
 
-Note how much more readable the dot notation version is in addition to being smaller:
+Compared with the expanded version, note how much more readable the dot notation
+version is in addition to being smaller:
 
 ```php
 return array(
