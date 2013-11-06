@@ -1,8 +1,8 @@
 <?php
 
-namespace Dmeybohm\Test;
+namespace Best\Test;
 
-use Dmeybohm\DotNotation\KeyAlreadyExistsException;
+use Best\DotNotation\KeyAlreadyExistsException;
 
 class KeyAlreadyExistsExceptionTest extends \PHPUnit_Framework_TestCase
 {

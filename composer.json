@@ -1,7 +1,7 @@
 {
-    "name": "dmeybohm/dot-notation",
+    "name": "best/dot-notation",
     "type": "library",
-    "description": "Compact MongoDB-like dot notation for creating arrays.",
+    "description": "Compact, MongoDB-like dot notation for creating arrays.",
     "minimum-stability": "dev",
     "keywords": [ "config", "mongo", "array", "configuration", "zend" ],
     "license": "MIT",
@@ -14,7 +14,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Dmeybohm":  "src/"
+            "Best":  "src/"
         }
     },
     "require-dev": {

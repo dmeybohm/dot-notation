@@ -1,6 +1,6 @@
 <?php
 
-namespace Dmeybohm;
+namespace Best;
 
 class DotNotation
 {
@@ -134,7 +134,7 @@ class DotNotation
      * @param  array $secondArray Second array to merge.
      * @param  array $parentKeys  (Optional) Key path to parents used for error reporting.
      * @return array The merged array.
-     * @throws \Dmeybohm\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
+     * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
      * array.
      */
     private static function mergeArraysRecursively(array $firstArray, array $secondArray, array $parentKeys = array())

@@ -2,8 +2,8 @@
 
 <phpunit bootstrap="bootstrap.php">
     <testsuites>
-        <testsuite name="zf-config">
-            <directory>./Dmeybohm</directory>
+        <testsuite name="best/dot-notation">
+            <directory>./Best</directory>
         </testsuite>
     </testsuites>
 </phpunit>

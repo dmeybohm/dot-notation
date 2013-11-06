@@ -1,6 +1,6 @@
 <?php
 
-namespace Dmeybohm\DotNotation;
+namespace Best\DotNotation;
 
 class KeyAlreadyExistsException extends \Exception
 {

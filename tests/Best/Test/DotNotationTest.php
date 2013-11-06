@@ -1,9 +1,9 @@
 <?php
 
-namespace Dmeybohm\Test;
+namespace Best\Test;
 
-use Dmeybohm\DotNotation;
-use Dmeybohm\DotNotation\KeyAlreadyExistsException;
+use Best\DotNotation;
+use Best\DotNotation\KeyAlreadyExistsException;
 
 class DotNotationTest extends \PHPUnit_Framework_TestCase
 {
@@ -193,7 +193,7 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests that overriding non-array keys throws an exception.
      *
-     * @expectedException \Dmeybohm\DotNotation\KeyAlreadyExistsException
+     * @expectedException \Best\DotNotation\KeyAlreadyExistsException
      * @return void
      */
     public function testOverridingNonArrayKeysThrowsAnException()
