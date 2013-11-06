@@ -13,21 +13,14 @@ php composer.phar require best/dot-notation:dev-master
 
 ## Usage
 
-If you have your autoloader configured, you can just use the class. 
+If you have your autoloader configured, you can just use the class.  The
+interface consists of one static method: `expand()`. This method transforms the
+dotted notation to the equivalent expanded array.
 
 ```php
 <?php
 use Best\DotNotation;
-```
 
-The interface consists of one static method: `expand()`. This
-method transforms the dotted notation to the equivalent expanded array.
-
-### DotNotation::expand()
-
-Use this to expand an array.
-
-```php
 $array = DotNotation::expand(array('my.dotted.key' => 'value'));
 // returns an array that looks like:
 array(
