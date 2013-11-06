@@ -98,7 +98,7 @@ in values are transformed in any way, either.
 
 ## Zend Framework 2 Configuration Example
 
-Here's another example from inside the example [Zend Framework 2][2] configuration
+Here's an example from inside the example [Zend Framework 2][2] configuration
 files where the arrays are deeply nested. 
 
 ```php
@@ -159,7 +159,7 @@ $array = DotNotation::expand(array(
 ));
 ```
 
-Appending keys all together makes it possible to have groups of related
+Because all keys are appended together, it's possible to have groups of related
 configuration that can be grouped together into sections. Otherwise, you'd have
 to have one place for all your controllers configuration, another for all your
 routes, and so on:
