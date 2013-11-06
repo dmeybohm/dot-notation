@@ -20,7 +20,7 @@ If you have your autoloader configured, you can just use the class.
 use Best\DotNotation;
 ```
 
-The interface consists of one static methods: `expand()`. This
+The interface consists of one static method: `expand()`. This
 method transforms the dotted notation to the equivalent expanded array.
 
 ### DotNotation::expand()
