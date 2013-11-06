@@ -20,8 +20,8 @@ If you have your autoloader configured, you can just use the class.
 use Best\DotNotation;
 ```
 
-The interface consists of two static methods: `expand()` and `fromFile()`. Both
-methods transform the dotted notation to the equivalent expanded arrays.
+The interface consists of one static methods: `expand()`. This
+method transforms the dotted notation to the equivalent expanded array.
 
 ### DotNotation::expand()
 
@@ -37,23 +37,6 @@ array(
          )
      )
 );
-```
-
-### DotNotation::fromFile()
-
-Use this to expand a file that returns an array. The include path
-is searched for the file.
-
-```php
-// Load from a file. The include path is searched:
-$array = DotNotation::fromFile('myfile.php')
-```
-
-In `myfile.php`:
-
-```php
-<?php
-return array('my.dotted.key' => 'value')
 ```
 
 ### Keys can be appended to
