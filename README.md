@@ -17,7 +17,7 @@ If you have your autoloader configured, you can just use the class.
 
 ```php
 <?php
-use Dmeybohm\DotNotation;
+use Best\DotNotation;
 ```
 
 The interface consists of two static methods: `expand()` and `fromFile()`. Both
@@ -85,7 +85,7 @@ Switching from a non-array type to an array or vice-versa inside a
 dotted key throws an exception.
 
 ```php
-// this throws an exception of \Dmeybohm\DotNotation\KeyAlreadyExistsException
+// this throws an exception of \Best\DotNotation\KeyAlreadyExistsException
 $array = DotNotation::expand(array(
     'my.dotted.key' => 'value1',
     'my.dotted.key.subkey' => 'value2'
@@ -110,7 +110,7 @@ array('controllers' => array('invokables' => array('Album\Controller\Album')));
 If you want to include a dot inside a key name, you can escape it with a backslash.
 
 ```php
-use Dmeybohm\DotNotation;
+use Best\DotNotation;
 $array = DotNotation::expand(array('my\.dotted\.key' => 'value'));
 // expands to: 
 array('my.dotted.key' => 'value')
