@@ -115,7 +115,10 @@ class DotNotation
     }
 
     /**
-     * Merge arrays recursively, appending when the keys are arrays and overriding when not.
+     * Merge arrays recursively. 
+     *
+     * This merges the values when they are arrays, and overrides the value in the first array with the second otherwise. 
+     *
      * This is used instead of array_merge_recursive since that will turn duplicated non-array
      * values into arrays.
      *
@@ -124,7 +127,7 @@ class DotNotation
      * @param  array $parentKeys  (Optional) Key path to parents used for error reporting.
      * @return array The merged array.
      * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
-     * array.
+     * array, or if an array is changed to a string.
      */
     private static function mergeArraysRecursively(array $firstArray, array $secondArray, array $parentKeys = array())
     {
