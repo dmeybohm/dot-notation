@@ -242,6 +242,30 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests that the key path is included in the key path when it is overridden.
+     *
+     * @return void
+     */
+    public function testKeyAlreadyExistsExceptionIsThrownAtToplevel()
+    {
+        $caught = false;
+        try
+        {
+            DotNotation::expand(array(
+                'scheduler.priority' => 42,
+                'scheduler' => 100,
+            ));
+        }
+        catch (KeyAlreadyExistsException $exception)
+        {
+            $caught = true;
+            $this->assertContains('scheduler', $exception->getMessage());
+            $this->assertContains('from an array', $exception->getMessage());
+        }
+        $this->assertTrue($caught, 'Exception was not thrown!');
+    }
+
+    /**
      * Tests that keys that have backslashes before dots are not expanded.
      *
      * @return void
@@ -354,5 +378,87 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
             )
         );
         $this->assertEquals($expect, $config, "Backslashes are not being left alone when not before period!");
+    }
+
+    /**
+     * Tests that keys and arrays overlapping can be remapped when option is passed.
+     *
+     * @return void
+     */
+    public function testArraysWithSingleKeyValuePairsWork()
+    {
+        $expanded = DotNotation::expand(array('scheduler' => 102));
+        $expect = array('scheduler' => 102);
+        $this->assertEquals($expect, $expanded);
+    }
+
+    /**
+     * Tests that KeyAlreadyExistsException is thrown for a key that already exists at the top level.
+     *
+     * @return void
+     */
+    public function testKeysAlreadyExistsIsThrownWhenAKeyAlreadyExistsAndIsAtTheTopLevel()
+    {
+        $caught = false;
+        try
+        {
+            DotNotation::expand(array(
+                'scheduler' => 102,
+                'scheduler.priority' => 42,
+            ));
+        }
+        catch (KeyAlreadyExistsException $exception)
+        {
+            $caught = true;
+            $this->assertContains('scheduler', $exception->getMessage());
+            $this->assertContains('from a non-array', $exception->getMessage());
+        }
+        $this->assertTrue($caught, 'Exception was not thrown!');
+    }
+
+    /**
+     * Tests that keys and arrays overlapping can be remapped when option is passed and the first
+     * key is a scalar.
+     *
+     * @return void
+     */
+    public function testKeysAndArraysOverlappingCanBeRemappedWithOptionsWhenFirstKeyIsAScalar()
+    {
+        $options = array(DotNotation::RemapOverlappingToSubkey => 'id');
+        $config = DotNotation::expand(array(
+            'scheduler' => 102,
+            'scheduler.priority' => 42,
+        ), $options);
+
+        $expect = array(
+            'scheduler' => array(
+                'id' => 102,
+                'priority' => 42,
+            )
+        );
+        $this->assertEquals($expect, $config);
+    }
+
+    /**
+     * Tests that keys and arrays overlapping can be remapped when option is passed and the first
+     * key is an array.
+     *
+     * @return void
+     */
+    public function testKeysAndArraysOverlappingCanBeRemappedWithOptionsWhenFirstKeyIsAnArray()
+    {
+        $options = array(DotNotation::RemapOverlappingToSubkey => 'id');
+        $config = DotNotation::expand(array(
+            'scheduler.priority' => 42,
+            'scheduler' => 102,
+        ), $options);
+
+        $expect = array(
+            'scheduler' => array(
+                'priority' => 42,
+                'id' => 102,
+            )
+        );
+        $this->assertEquals($expect, $config);
     }
 }

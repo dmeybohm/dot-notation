@@ -5,12 +5,21 @@ namespace Best;
 class DotNotation
 {
     /**
+     * Option to pass to expand() with the key to remap the overlapping
+     * subkey to in the expanded array.
+     *
+     * @type integer
+     */
+    const RemapOverlappingToSubkey = 'RemapOverlappingToSubkey';
+
+    /**
      * Convert the configuration to a normal PHP array, expanding the dotted keys.
      *
-     * @param  array $array Array to expand.
+     * @param  array $array   Array to expand.
+     * @param  array $options (Optional) Associative array of options.
      * @return array The expanded array.
      */
-    public static function expand(array $array)
+    public static function expand(array $array, array $options = array())
     {
         $result = array();
 
@@ -21,11 +30,21 @@ class DotNotation
             if (count($references) == 1)
             {
                 $key = $references[0];
-                $result[$key] = self::getValue($value);
+
+                // If the result key is already set, we have to merge
+                // the two values.
+                if (isset($result[$key]))
+                {
+                    $result[$key] = self::mergeTwoValues($result[$key], self::getValue($value), $options, array($key));
+                }
+                else
+                {
+                    $result[$key] = self::getValue($value);
+                }
             }
             else
             {
-                self::dereferenceDots($result, $references, $value);
+                self::dereferenceDots($result, $references, $value, $options);
             }
         }
 
@@ -38,9 +57,10 @@ class DotNotation
      * @param array &$result    The resulting array to append to.
      * @param array $references The dotted key as an array of strings.
      * @param mixed $value      The value the dotted key points to.
+     * @param array $options    Options.
      * @return void
      */
-    private static function dereferenceDots(array &$result, array $references, $value)
+    private static function dereferenceDots(array &$result, array $references, $value, array $options)
     {
         $top = array_shift($references);
         $values = self::getValue($value);
@@ -54,7 +74,14 @@ class DotNotation
 
         if (isset($result[$top]))
         {
-            $result[$top] = self::mergeArraysRecursively($result[$top], $values, array($top));
+            if (is_array($result[$top]))
+            {
+                $result[$top] = self::mergeArraysRecursively($result[$top], $values, $options, array($top));
+            }
+            else
+            {
+                $result[$top] = self::handleInconsistentKeys($result[$top], $values, $options, array($top));
+            }
         }
         else
         {
@@ -124,12 +151,14 @@ class DotNotation
      *
      * @param  array $firstArray  First array to merge.
      * @param  array $secondArray Second array to merge.
+     * @param  array $options     Options.
      * @param  array $parentKeys  (Optional) Key path to parents used for error reporting.
      * @return array The merged array.
      * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
      * array, or if an array is changed to a string.
      */
-    private static function mergeArraysRecursively(array $firstArray, array $secondArray, array $parentKeys = array())
+    private static function mergeArraysRecursively(array $firstArray, array $secondArray, 
+                                                   array $options, array $parentKeys = array())
     {
         $result = $firstArray;
 
@@ -137,31 +166,74 @@ class DotNotation
         {
             if (isset($firstArray[$key]))
             {
-                $oneIsArray = is_array($firstArray[$key]);
-                $twoIsArray = is_array($value);
-
-                if ($oneIsArray xor $twoIsArray)
-                {
-                    $parentKeyComplete = join('.', array_merge($parentKeys, array($key)));
-                    $message = "Inconsistent type in dotted key: Attempting to change key '{$parentKeyComplete}' ";
-                    $message .= ($oneIsArray ? "from an array to non-array" : "from a non-array to an array");
-                    throw new DotNotation\KeyAlreadyExistsException($message);
-                }
-                else if ($oneIsArray && $twoIsArray)
-                {
-                    array_push($parentKeys, $key);
-                    $result[$key] = self::mergeArraysRecursively($firstArray[$key], $secondArray[$key], $parentKeys);
-                    array_pop($parentKeys);
-                }
-                else
-                {
-                    $result[$key] = $value;
-                }
+                array_push($parentKeys, $key);
+                $result[$key] = self::mergeTwoValues($firstArray[$key], $value, $options, $parentKeys);
+                array_pop($parentKeys);
             }
             else
             {
                 $result[$key] = $value;
             }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Handle changing a key to an array or vice-versa.
+     * @throw \Best\DotNotation\KeyAlreadyExistsException If no override subkey is provided.
+     * @return The merged 
+     */
+    public static function handleInconsistentKeys($valueOne, $valueTwo, $options, array $parentKeys)
+    {
+        if (isset($options[self::RemapOverlappingToSubkey])) 
+        {
+            $subkey = $options[self::RemapOverlappingToSubkey];
+
+            if (is_array($valueOne)) 
+            {
+                $array = $valueOne;
+                $scalar = $valueTwo;
+            }
+            else
+            {
+                $array = $valueTwo;
+                $scalar = $valueOne;
+            }
+
+            $array[$subkey] = $scalar;
+            return self::expand($array);
+        } 
+        else 
+        {
+            $oneIsArray = is_array($valueOne);
+            $twoIsArray = is_array($valueTwo);
+            $parentKeyComplete = join('.', $parentKeys);
+            $message = "Inconsistent type in dotted key: Attempting to change key '{$parentKeyComplete}' ";
+            $message .= ($oneIsArray ? "from an array to non-array" : "from a non-array to an array");
+            throw new DotNotation\KeyAlreadyExistsException($message);
+        }
+    }
+
+    private static function mergeTwoValues($valueOne, $valueTwo, array $options, array $parentKeys)
+    {
+        $oneIsArray = is_array($valueOne);
+        $twoIsArray = is_array($valueTwo);
+
+        if ($oneIsArray xor $twoIsArray)
+        {
+            $result = self::handleInconsistentKeys($valueOne, $valueTwo, 
+                                                   $options, $parentKeys);
+        }
+        else if ($oneIsArray && $twoIsArray)
+        {
+            $result = self::mergeArraysRecursively($valueOne, $valueTwo,
+                                                   $options, $parentKeys);
+        }
+        else
+        {
+            // Value from the second array overrides the first:
+            $result = $valueTwo;
         }
 
         return $result;
