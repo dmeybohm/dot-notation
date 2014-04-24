@@ -26,6 +26,7 @@ class DotNotation
         foreach ($array as $key => $value)
         {
             $references = self::expandKey($key);
+            $value      = self::getValue($value);
 
             if (count($references) == 1)
             {
@@ -35,11 +36,11 @@ class DotNotation
                 // the two values.
                 if (isset($result[$key]))
                 {
-                    $result[$key] = self::mergeTwoValues($result[$key], self::getValue($value), $options, array($key));
+                    $result[$key] = self::mergeTwoValues($result[$key], $value, $options, array($key));
                 }
                 else
                 {
-                    $result[$key] = self::getValue($value);
+                    $result[$key] = $value;
                 }
             }
             else
@@ -56,14 +57,13 @@ class DotNotation
      *
      * @param array &$result    The resulting array to append to.
      * @param array $references The dotted key as an array of strings.
-     * @param mixed $value      The value the dotted key points to.
+     * @param mixed $values     The values the dotted key points to.
      * @param array $options    Options.
      * @return void
      */
-    private static function dereferenceDots(array &$result, array $references, $value, array $options)
+    private static function dereferenceDots(array &$result, array $references, $values, array $options)
     {
         $top = array_shift($references);
-        $values = self::getValue($value);
 
         $ref = end($references);
         while ($ref)
