@@ -81,7 +81,7 @@ want the scalar value to be remapped to:
 $array = DotNotation::expand(array(
     'key' => 'value1',
     'key.extra_subkey' => 'value2'
-), array(DotNotation::RemapOverlappingToSubkey => 'remapped_subkey');
+), array(DotNotation::RemapOverlappingToSubkey => 'remapped_subkey'));
 // expands to:
 array(
     'key' => array(
