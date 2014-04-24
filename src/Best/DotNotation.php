@@ -74,14 +74,7 @@ class DotNotation
 
         if (isset($result[$top]))
         {
-            if (is_array($result[$top]))
-            {
-                $result[$top] = self::mergeArraysRecursively($result[$top], $values, $options, array($top));
-            }
-            else
-            {
-                $result[$top] = self::handleInconsistentKeys($result[$top], $values, $options, array($top));
-            }
+            $result[$top] = self::mergeTwoValues($result[$top], $values, $options, array($top));
         }
         else
         {
