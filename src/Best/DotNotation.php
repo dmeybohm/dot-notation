@@ -137,18 +137,19 @@ class DotNotation
     /**
      * Merge arrays recursively. 
      *
-     * This merges the values when they are arrays, and overrides the value in the first array with the second otherwise. 
+     * This merges the values when they are arrays, and overrides the value in 
+     * the first array with the second otherwise. 
      *
-     * This is used instead of array_merge_recursive since that will turn duplicated non-array
-     * values into arrays.
+     * This is used instead of array_merge_recursive since that will turn 
+     * duplicated non-array values into arrays.
      *
+     * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
+     *         array, or if an array is changed to a string.
      * @param  array $firstArray  First array to merge.
      * @param  array $secondArray Second array to merge.
      * @param  array $options     Options.
      * @param  array $parentKeys  (Optional) Key path to parents used for error reporting.
      * @return array The merged array.
-     * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
-     * array, or if an array is changed to a string.
      */
     private static function mergeArraysRecursively(array $firstArray, array $secondArray, 
                                                    array $options, array $parentKeys = array())
@@ -174,7 +175,12 @@ class DotNotation
 
     /**
      * Handle changing a key to an array or vice-versa.
-     * @throw \Best\DotNotation\KeyAlreadyExistsException If no override subkey is provided.
+     *
+     * @param  mixed $valueOne    First value.
+     * @param  mixed $valueTwo    Second value.
+     * @param  array $options     Options.
+     * @param  array $parentKeys  Key path to parents used for error reporting.
+     * @throws \Best\DotNotation\KeyAlreadyExistsException If no override subkey is provided.
      * @return The merged 
      */
     public static function handleInconsistentKeys($valueOne, $valueTwo, $options, array $parentKeys)
@@ -208,6 +214,17 @@ class DotNotation
         }
     }
 
+    /**
+     * Merge two values and return the result.
+     *
+     * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
+     *         array, or if an array is changed to a string.
+     * @param  mixed $valueOne    First value to merge.
+     * @param  mixed $valueTwo    Second value to merge.
+     * @param  array $options     Options.
+     * @param  array $parentKeys  Key path to parents used for error reporting.
+     * @return The merged values as an array, or the second value if both are scalars.
+     */
     private static function mergeTwoValues($valueOne, $valueTwo, array $options, array $parentKeys)
     {
         $oneIsArray = is_array($valueOne);
