@@ -55,7 +55,7 @@ array(
 );
 ```
 
-### ...but overriding keys throws an exception...
+### ...but overriding keys throws an exception.
 
 Switching from a non-array type to an array or vice-versa inside a
 dotted key throws an exception.
