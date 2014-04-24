@@ -72,9 +72,10 @@ This should catch some mistakes when using the dot notation.
 
 ### ...unless you pass a parameter to override this behavior.
 
-You can pass `RemapOverlappingToSubkey` as a key in an options array as
-the second argument to `expand`, and giving a string parameter for
-which subkey you want the scalar value to be remapped to:
+You can also pass an argument to avoid the exception. To do this, pass
+`DotNotation::RemapOverlappingToSubkey` as a key in an options array as the
+second argument to `expand`, and give a string parameter for which subkey you
+want the scalar value to be remapped to:
 
 ```php
 $array = DotNotation::expand(array(
