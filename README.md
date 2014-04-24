@@ -32,7 +32,7 @@ array(
 );
 ```
 
-### Keys can be appended to
+### Keys can be appended to...
 
 Dotted keys can be specified many times in the same array, and all the values will be 
 appended as long as all of the parent keys are arrays.
@@ -55,7 +55,7 @@ array(
 );
 ```
 
-### Overriding keys throws an exception
+### ...but overriding keys throws an exception...
 
 Switching from a non-array type to an array or vice-versa inside a
 dotted key throws an exception.
@@ -68,9 +68,32 @@ $array = DotNotation::expand(array(
 ));
 ```
 
-This should catch some mistakes when using the dot notation, but note that
-PHP itself will happily override keys in the same array. So, the following
-will not throw an error, but silently override the first key:
+This should catch some mistakes when using the dot notation. 
+
+### ...unless you pass a parameter to override this behavior.
+
+You can pass `RemapOverlappingToSubkey` as a key in an options array as
+the second argument to `expand`, and giving a string parameter for
+which subkey you want the scalar value to be remapped to:
+
+```php
+$array = DotNotation::expand(array(
+    'key' => 'value1',
+    'key.extra_subkey' => 'value2'
+), array(DotNotation::RemapOverlappingToSubkey => 'remapped_subkey');
+// expands to:
+array(
+    'key' => array(
+        'remapped_subkey' => 'value1',
+        'extra_subkey' => 'value2'
+    )
+);
+```
+
+### Note that PHP will override keys with the same value!
+
+Note that PHP itself will happily override keys in the same array. So, the
+following will not throw an error, but silently override the first key:
 
 ```php
 $array = DotNotation::expand(array(
