@@ -196,18 +196,18 @@ class DotNotation
         $oneIsArray = is_array($valueOne);
         $twoIsArray = is_array($valueTwo);
 
-        if ($oneIsArray xor $twoIsArray)
-        {
-            $result = self::handleInconsistentKeys($valueOne, $valueTwo, $parentKeys);
-        }
-        else if ($oneIsArray && $twoIsArray)
+        if ($oneIsArray && $twoIsArray)
         {
             $result = self::mergeArraysRecursively($valueOne, $valueTwo, $parentKeys);
         }
-        else
+        else if (!$oneIsArray && !$twoIsArray)
         {
             // Value from the second array overrides the first:
             $result = $valueTwo;
+        }
+        else
+        {
+            $result = self::handleInconsistentKeys($valueOne, $valueTwo, $parentKeys);
         }
 
         return $result;
