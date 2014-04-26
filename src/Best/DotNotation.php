@@ -5,7 +5,7 @@ namespace Best;
 class DotNotation
 {
     /**
-     * Convert the configuration to a normal PHP array, expanding the dotted keys.
+     * Convert a dot notation array to a normal PHP array, expanding the dotted keys.
      *
      * @param  array $array   Array to expand.
      * @return array The expanded array.
@@ -137,11 +137,11 @@ class DotNotation
      *         array, or if an array is changed to a string.
      * @param  array $firstArray  First array to merge.
      * @param  array $secondArray Second array to merge.
-     * @param  array $parentKeys  (Optional) Key path to parents used for error reporting.
+     * @param  array $parentKeys  Key path to parents used for error reporting.
      * @return array The merged array.
      */
     private static function mergeArraysRecursively(array $firstArray, array $secondArray, 
-                                                   array $parentKeys = array())
+                                                   array $parentKeys)
     {
         $result = $firstArray;
 
@@ -163,26 +163,10 @@ class DotNotation
     }
 
     /**
-     * Handle changing a key to an array or vice-versa.
-     *
-     * @param  mixed $valueOne    First value.
-     * @param  mixed $valueTwo    Second value.
-     * @param  array $parentKeys  Key path to parents used for error reporting.
-     * @throws \Best\DotNotation\KeyAlreadyExistsException
-     * @return void
-     */
-    public static function handleInconsistentKeys($valueOne, $valueTwo, array $parentKeys)
-    {
-        $oneIsArray = is_array($valueOne);
-        $twoIsArray = is_array($valueTwo);
-        $parentKeyComplete = join('.', $parentKeys);
-        $message = "Inconsistent type in dotted key: Attempting to change key '{$parentKeyComplete}' ";
-        $message .= ($oneIsArray ? "from an array to non-array" : "from a non-array to an array");
-        throw new DotNotation\KeyAlreadyExistsException($message);
-    }
-
-    /**
      * Merge two values and return the result.
+     *
+     * This merges the values when they are arrays, and overrides the value in 
+     * the first array with the second otherwise. 
      *
      * @param  mixed $valueOne    First value to merge.
      * @param  mixed $valueTwo    Second value to merge.
@@ -211,5 +195,24 @@ class DotNotation
         }
 
         return $result;
+    }
+
+    /**
+     * Handle changing a key to an array or vice-versa.
+     *
+     * @param  mixed $valueOne    First value.
+     * @param  mixed $valueTwo    Second value.
+     * @param  array $parentKeys  Key path to parents used for error reporting.
+     * @throws \Best\DotNotation\KeyAlreadyExistsException
+     * @return void
+     */
+    private static function handleInconsistentKeys($valueOne, $valueTwo, array $parentKeys)
+    {
+        $oneIsArray = is_array($valueOne);
+        $twoIsArray = is_array($valueTwo);
+        $parentKeyComplete = join('.', $parentKeys);
+        $message = "Inconsistent type in dotted key: Attempting to change key '{$parentKeyComplete}' ";
+        $message .= ($oneIsArray ? "from an array to non-array" : "from a non-array to an array");
+        throw new DotNotation\KeyAlreadyExistsException($message);
     }
 }
