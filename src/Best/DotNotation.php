@@ -168,8 +168,8 @@ class DotNotation
      * @param  mixed $valueOne    First value.
      * @param  mixed $valueTwo    Second value.
      * @param  array $parentKeys  Key path to parents used for error reporting.
-     * @throws \Best\DotNotation\KeyAlreadyExistsException If no override subkey is provided.
-     * @return The merged 
+     * @throws \Best\DotNotation\KeyAlreadyExistsException
+     * @return void
      */
     public static function handleInconsistentKeys($valueOne, $valueTwo, array $parentKeys)
     {
@@ -184,11 +184,11 @@ class DotNotation
     /**
      * Merge two values and return the result.
      *
-     * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
-     *         array, or if an array is changed to a string.
      * @param  mixed $valueOne    First value to merge.
      * @param  mixed $valueTwo    Second value to merge.
      * @param  array $parentKeys  Key path to parents used for error reporting.
+     * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
+     *         array, or if an array is changed to a string.
      * @return The merged values as an array, or the second value if both are scalars.
      */
     private static function mergeTwoValues($valueOne, $valueTwo, array $parentKeys)
