@@ -6,6 +6,7 @@ class DotNotation
 {
     /**
      * Convert a php nested array to mongo like dot notation
+     * @see http://stackoverflow.com/questions/10424335/php-convert-multidimensional-array-to-2d-array-with-dot-notation-keys
      * @param array $array
      * @return array
      */
