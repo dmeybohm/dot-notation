@@ -5,6 +5,27 @@ namespace Best;
 class DotNotation
 {
     /**
+     * Convert a php nested array to mongo like dot notation
+     * @param array $array
+     * @return array
+     */
+    public static function compact(array $array)
+    {
+        $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($array));
+        $rVal = [];
+        foreach ($iterator as $leafValue)
+        {
+            $keys = array();
+            foreach (range(0, $iterator->getDepth()) as $depth)
+                $keys[] = $iterator->getSubIterator($depth)->key();
+
+            $rVal[ join('.', $keys) ] = $leafValue;
+        }
+
+        return $rVal;
+    }
+    
+    /**
      * Convert a dot notation array to a normal PHP array, expanding the dotted keys.
      *
      * @param  array $array   Array to expand.
