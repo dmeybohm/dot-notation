@@ -14,9 +14,9 @@ composer require best/dot-notation
 ## Usage
 
 If you have your autoloader configured, you can just use the class.  The
-interface consists of two static methods: `expand()` and `compact()`. The `expand` method transforms the
-dotted notation to the equivalent expanded array, and `compact()` does the
-inverse..
+interface consists of two static methods: `expand()` and `compact()`. The
+`expand()` method transforms the dotted notation to the equivalent expanded
+array, and `compact()` does the inverse.
 
 ```php
 <?php
@@ -34,6 +34,9 @@ array(
 ```
 
 ### Compact does the reverse operation
+
+Call the `compact()` method when you have a regular php array and
+you want to create a DotNotation array:
 
 ```php
 use Best\DotNotation;
