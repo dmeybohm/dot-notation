@@ -40,9 +40,11 @@ use Best\DotNotation;
 
 $array = DotNotation::compact(array(
   'my' => array(
-    'dotted' ==> array(
-      'key' => 'value'
-))));
+      'dotted' ==> array(
+          'key' => 'value'
+      )
+  )
+));
 // returns the dotted array:
 array('my.dotted.key' => 'value');
 ```
