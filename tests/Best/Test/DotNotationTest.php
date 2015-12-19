@@ -473,4 +473,38 @@ class DotNotationTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals($expect, $array);
     }
+
+    /**
+     * Tests that dots are escaped when compacting.
+     *
+     * @return void
+     */
+    public function testDotsAreEscapedWhenCompacting() 
+    {
+        $array = DotNotation::compact(array(
+            'foo.bar' => array(
+                'bar' => array(
+                    'buzz',
+                    'baz' => array('foo'),
+                ),
+            ),
+            'key' => array(
+                'subkey1' => array(
+                    'subkey2.dotted' => array(
+                        array('value')
+                    )
+                )
+            )
+        ));
+        $expect = array(
+            'foo\.bar.bar' => array(
+                'buzz',
+                'baz' => array('foo')
+            ),
+            'key.subkey1.subkey2\.dotted' => array(
+                array('value')
+            )
+        );
+        $this->assertEquals($expect, $array);
+    }
 }

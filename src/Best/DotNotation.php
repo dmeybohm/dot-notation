@@ -55,6 +55,7 @@ class DotNotation
 
         foreach ($array as $key => $value)
         {
+            $escapedKey = self::escapeKey($key);
             if (is_array($value))
             {
                 if (count(array_keys($value)) === 1 &&
@@ -64,18 +65,29 @@ class DotNotation
                     do
                     {
                         list($moreKey, $moreValue) = each($value);
-                        $extraKey .= "." . $moreKey; 
+                        $extraKey .= "." . self::escapeKey($moreKey); 
                         $value = $moreValue;
                     }
                     while (is_array($value) && count(array_keys($value)) === 1 && !is_numeric(key($value)));
-                    $result[$key . $extraKey] = self::compactKeys($value);
+                    $result[$escapedKey . $extraKey] = self::compactKeys($value);
                     continue;
                 }
             }
-            $result[$key] = self::compactKeys($value);
+            $result[$escapedKey] = self::compactKeys($value);
         }
 
         return $result;
+    }
+
+    /**
+     * Escape keys.
+     *
+     * @param string $key The key to escape.
+     * @return string
+     */
+    protected function escapeKey($key)
+    {
+        return str_replace(".", "\\.", $key);
     }
 
     /**
