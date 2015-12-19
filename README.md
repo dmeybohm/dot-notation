@@ -14,8 +14,9 @@ composer require best/dot-notation
 ## Usage
 
 If you have your autoloader configured, you can just use the class.  The
-interface consists of one static method: `expand()`. This method transforms the
-dotted notation to the equivalent expanded array.
+interface consists of two static methods: `expand()` and `compact()`. The `expand` method transforms the
+dotted notation to the equivalent expanded array, and `compact()` does the
+inverse..
 
 ```php
 <?php
@@ -30,6 +31,20 @@ array(
          )
      )
 );
+```
+
+### Compact does the reverse operation
+
+```php
+use Best\DotNotation;
+
+$array = DotNotation::compact(array(
+  'my' => array(
+    'dotted' ==> array(
+      'key' => 'value'
+))));
+// returns the dotted array:
+array('my.dotted.key' => 'value');
 ```
 
 ### Keys can be appended to...
