@@ -44,6 +44,59 @@ class DotNotation
     }
 
     /**
+     * Compact an expanded array to a DotNotation array.
+     *
+     * @param array $array The array to compact.
+     * @return array The compacted array.
+     */
+    public static function compact(array $array) 
+    {
+        $result = array();
+
+        foreach ($array as $key => $value)
+        {
+            if (is_array($value))
+            {
+                if (count(array_keys($value)) === 1 &&
+                    !is_numeric(key($value)))
+                {
+                    $extraKey = "";
+                    do
+                    {
+                        list($moreKey, $moreValue) = each($value);
+                        $extraKey .= "." . $moreKey; 
+                        $value = $moreValue;
+                    }
+                    while (is_array($value) && count(array_keys($value)) === 1 && !is_numeric(key($value)));
+                    $result[$key . $extraKey] = self::compactKeys($value);
+                    continue;
+                }
+            }
+            $result[$key] = self::compactKeys($value);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Create keys from the value.
+     * 
+     * @param mixed $value The value to compact keys for.
+     * @return mixed The compacted value.
+     */
+    protected static function compactKeys($value)
+    {
+        if (is_array($value))
+        {
+            return self::compact($value);
+        }
+        else
+        {
+            return $value;
+        }
+    }
+
+    /**
      * Dereference an array of keys and append the result to an array.
      *
      * @param array &$result    The resulting array to append to.
