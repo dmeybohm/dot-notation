@@ -2,7 +2,7 @@
 
 namespace Best\DotNotation;
 
-class KeyAlreadyExistsException extends \Exception
+class KeyAlreadyExistsException extends \RuntimeException
 {
 
 }
