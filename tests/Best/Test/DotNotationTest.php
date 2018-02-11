@@ -5,7 +5,7 @@ namespace Best\Test;
 use Best\DotNotation;
 use Best\DotNotation\KeyAlreadyExistsException;
 
-class DotNotationTest extends \PHPUnit_Framework_TestCase
+class DotNotationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests that dots are expanded to appropriate array keys.

@@ -7,8 +7,9 @@ class DotNotation
     /**
      * Convert a dot notation array to a normal PHP array, expanding the dotted keys.
      *
-     * @param  array $array   Array to expand.
+     * @param  array $array Array to expand.
      * @return array The expanded array.
+     * @throws DotNotation\KeyAlreadyExistsException
      */
     public static function expand(array $array)
     {
@@ -85,7 +86,7 @@ class DotNotation
      * @param string $key The key to escape.
      * @return string
      */
-    protected function escapeKey($key)
+    private static function escapeKey($key)
     {
         return str_replace(".", "\\.", $key);
     }
@@ -96,7 +97,7 @@ class DotNotation
      * @param mixed $value The value to compact keys for.
      * @return mixed The compacted value.
      */
-    protected static function compactKeys($value)
+    private static function compactKeys($value)
     {
         if (is_array($value))
         {
@@ -111,10 +112,11 @@ class DotNotation
     /**
      * Dereference an array of keys and append the result to an array.
      *
-     * @param array &$result    The resulting array to append to.
+     * @param array &$result The resulting array to append to.
      * @param array $references The dotted key as an array of strings.
-     * @param mixed $values     The values the dotted key points to.
+     * @param mixed $values The values the dotted key points to.
      * @return void
+     * @throws DotNotation\KeyAlreadyExistsException
      */
     private static function dereferenceDots(array &$result, array $references, $values)
     {
@@ -170,12 +172,13 @@ class DotNotation
 
         return $result;
     }
-    
+
     /**
      * Get a value and recursively resolve exploded references.
      *
      * @param mixed $value The value to get.
      * @return mixed
+     * @throws DotNotation\KeyAlreadyExistsException
      */
     private static function getValue($value)
     {
@@ -238,7 +241,7 @@ class DotNotation
      * @param  array $parentKeys  Key path to parents used for error reporting.
      * @throws \Best\DotNotation\KeyAlreadyExistsException if a key that already exists is changed to an
      *         array, or if an array is changed to a string.
-     * @return The merged values as an array, or the second value if both are scalars.
+     * @return array The merged values as an array, or the second value if both are scalars.
      */
     private static function mergeTwoValues($valueOne, $valueTwo, array $parentKeys)
     {
@@ -256,7 +259,7 @@ class DotNotation
         }
         else
         {
-            $result = self::handleInconsistentKeys($valueOne, $valueTwo, $parentKeys);
+            self::throwHandleInconsistentKeysException($valueOne, $parentKeys);
         }
 
         return $result;
@@ -265,16 +268,14 @@ class DotNotation
     /**
      * Handle changing a key to an array or vice-versa.
      *
-     * @param  mixed $valueOne    First value.
-     * @param  mixed $valueTwo    Second value.
-     * @param  array $parentKeys  Key path to parents used for error reporting.
-     * @throws \Best\DotNotation\KeyAlreadyExistsException
+     * @param  mixed $valueOne First value.
+     * @param  array $parentKeys Key path to parents used for error reporting.
      * @return void
+     * @throws DotNotation\KeyAlreadyExistsException
      */
-    private static function handleInconsistentKeys($valueOne, $valueTwo, array $parentKeys)
+    private static function throwHandleInconsistentKeysException($valueOne, array $parentKeys)
     {
         $oneIsArray = is_array($valueOne);
-        $twoIsArray = is_array($valueTwo);
         $parentKeyComplete = join('.', $parentKeys);
         $message = "Inconsistent type in dotted key: Attempting to change key '{$parentKeyComplete}' ";
         $message .= ($oneIsArray ? "from an array to non-array" : "from a non-array to an array");

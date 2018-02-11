@@ -17,7 +17,12 @@
             "Best":  "src/"
         }
     },
+    "autoload-dev": {
+        "psr-0": {
+            "Best": "test/"
+        }
+    },
     "require-dev": {
-        "phpunit/phpunit": "3.7.x"
+        "phpunit/phpunit": "^5"
     }
 }
