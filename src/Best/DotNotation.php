@@ -85,7 +85,7 @@ class DotNotation
      * @param string $key The key to escape.
      * @return string
      */
-    protected function escapeKey($key)
+    protected static function escapeKey($key)
     {
         return str_replace(".", "\\.", $key);
     }
