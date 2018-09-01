@@ -13,13 +13,13 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "Best":  "src/"
+        "psr-4": {
+            "Best\\":  "src/"
         }
     },
     "autoload-dev": {
-        "psr-0": {
-            "Best": "test/"
+        "psr-4": {
+            "Best\\Test\\": "test/"
         }
     },
     "require-dev": {
