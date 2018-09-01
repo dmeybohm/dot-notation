@@ -3,7 +3,7 @@
 <phpunit bootstrap="vendor/autoload.php">
     <testsuites>
         <testsuite name="best/dot-notation">
-            <directory>tests/Best</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
