@@ -2,7 +2,7 @@
     "name": "best/dot-notation",
     "type": "library",
     "description": "Compact, MongoDB-like dot notation for creating arrays.",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "keywords": [ "config", "mongo", "array", "configuration", "zend" ],
     "license": "MIT",
     "homepage": "http://github.com/dmeybohm/dot-notation",
