@@ -2,7 +2,7 @@
 
 namespace Best;
 
-use Best\DotNotation\InvalidKeyPath;
+use Best\DotNotation\BadKeyPathType;
 use Best\DotNotation\KeyAlreadyExists;
 use Best\DotNotation\KeyNotFound;
 
@@ -23,7 +23,7 @@ final class DotNotation
      *
      * @return mixed The returned value, or the default value if no value is found.
      * @throws KeyNotFound
-     * @throws InvalidKeyPath
+     * @throws BadKeyPathType
      */
     public static function get(array $array, $keyPath)
     {
@@ -78,7 +78,7 @@ final class DotNotation
      * @param mixed $value The value to set in the array.
      * @return array The resulting array with the value set.
      *
-     * @throws InvalidKeyPath
+     * @throws BadKeyPathType
      * @throws KeyAlreadyExists
      */
     public static function set(array $array, $keyPath, $value)
@@ -120,7 +120,7 @@ final class DotNotation
      * @return array The array with the value unset.
      *
      * @throws KeyNotFound
-     * @throws InvalidKeyPath
+     * @throws BadKeyPathType
      */
     public static function remove(array $array, $keyPath)
     {
@@ -418,12 +418,12 @@ final class DotNotation
      *
      * @param mixed $keyPath
      *
-     * @throws InvalidKeyPath
+     * @throws BadKeyPathType
      */
     private static function checkKeyPath($keyPath)
     {
         if (!is_string($keyPath) && !is_int($keyPath)) {
-            throw new InvalidKeyPath($keyPath);
+            throw new BadKeyPathType($keyPath);
         }
     }
 

@@ -5,8 +5,6 @@ deeply nested arrays compactly in PHP.
 
 ## Installation
 
-Do:
-
 ```
 composer require best/dot-notation
 ```

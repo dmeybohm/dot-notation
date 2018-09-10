@@ -14,7 +14,7 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideInvalidKeyPath
-     * @expectedException \Best\DotNotation\InvalidKeyPath
+     * @expectedException \Best\DotNotation\BadKeyPathType
      */
     public function testGetThrowsInvalidArgumentExceptionForInvalidKeyPaths($keyPath)
     {
@@ -57,7 +57,7 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideInvalidKeyPath
-     * @expectedException \Best\DotNotation\InvalidKeyPath
+     * @expectedException \Best\DotNotation\BadKeyPathType
      */
     public function testSetThrowsInvalidArgumentExceptionIfKeyPathIsNotAnIntegerOrString($keyPath)
     {

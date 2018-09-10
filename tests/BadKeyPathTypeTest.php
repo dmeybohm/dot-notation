@@ -2,22 +2,22 @@
 
 namespace Best\DotNotation\Test;
 
-use Best\DotNotation\InvalidKeyPath;
+use Best\DotNotation\BadKeyPathType;
 
-class InvalidKeyPathTest extends \PHPUnit\Framework\TestCase
+class BadKeyPathTypeTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreateNewInstance()
     {
-        $this->assertNotNull(new InvalidKeyPath('hello'));
+        $this->assertNotNull(new BadKeyPathType('hello'));
     }
 
     /**
-     * @expectedException \Best\DotNotation\InvalidKeyPath
+     * @expectedException \Best\DotNotation\BadKeyPathType
      * @expectedExceptionMessageRegExp /Variable is not a string or int.*true/
      */
     public function testThrowingExceptionContainsDefaultMessage()
     {
-        throw new InvalidKeyPath(true);
+        throw new BadKeyPathType(true);
     }
 
 }
