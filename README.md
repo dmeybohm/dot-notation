@@ -5,8 +5,6 @@ deeply nested arrays compactly in PHP.
 
 ## Installation
 
-Do:
-
 ```
 composer require best/dot-notation
 ```
@@ -81,7 +79,7 @@ Switching from a non-array type to an array or vice-versa inside a
 dotted key throws an exception.
 
 ```php
-// this throws an exception of \Best\DotNotation\KeyAlreadyExistsException
+// this throws an exception of \Best\DotNotation\InconsistentKeyTypes
 $array = DotNotation::expand(array(
     'my.dotted.key' => 'value1',
     'my.dotted.key.subkey' => 'value2'

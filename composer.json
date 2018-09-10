@@ -1,7 +1,7 @@
 {
     "name": "best/dot-notation",
     "type": "library",
-    "description": "Compact, MongoDB-like dot notation for creating arrays.",
+    "description": "Compact, MongoDB-like dot notation for manipulating and creating arrays.",
     "minimum-stability": "stable",
     "keywords": [ "config", "mongo", "array", "configuration", "zend" ],
     "license": "MIT",
@@ -19,8 +19,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Best\\Test\\": "test/"
+            "Best\\DotNotation\\Test\\": "test/"
         }
+    },
+    "require": {
+        "php": ">=5.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^5"

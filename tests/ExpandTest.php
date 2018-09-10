@@ -1,11 +1,11 @@
 <?php
 
-namespace Best\Test;
+namespace Best\DotNotation\Test;
 
 use Best\DotNotation;
-use Best\DotNotation\KeyAlreadyExistsException;
+use Best\DotNotation\InconsistentKeyTypes;
 
-class DotNotationTest extends \PHPUnit\Framework\TestCase
+class ExpandTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests that dots are expanded to appropriate array keys.
@@ -40,7 +40,7 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
     {
         $config = DotNotation::expand(array(
             'db.driver' => 'Pdo',
-            'db.dsn'    => 'mysql:dbname=zf2tutorial;host=localhost',
+            'db.dsn' => 'mysql:dbname=zf2tutorial;host=localhost',
             'db.driver_options' => array(
                 '__xxx_PDO::MYSQL_ATTR_INIT_COMMAND' => 'SET NAMES \'UTF8\''
             ),
@@ -50,8 +50,8 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
         ));
         $expect = array(
             'db' => array(
-                'driver'         => 'Pdo',
-                'dsn'            => 'mysql:dbname=zf2tutorial;host=localhost',
+                'driver' => 'Pdo',
+                'dsn' => 'mysql:dbname=zf2tutorial;host=localhost',
                 'driver_options' => array(
                     '__xxx_PDO::MYSQL_ATTR_INIT_COMMAND' => 'SET NAMES \'UTF8\''
                 ),
@@ -59,14 +59,14 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
             'service_manager' => array(
                 'factories' => array(
                     'Zend\Db\Adapter\Adapter'
-                            => 'Zend\Db\Adapter\AdapterServiceFactory',
+                    => 'Zend\Db\Adapter\AdapterServiceFactory',
                 ),
             )
         );
 
         $this->assertEquals($expect, $config);
     }
-    
+
     /**
      * Tests that typical module configuration works.
      *
@@ -80,15 +80,15 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
             ),
 
             'router.routes.album' => array(
-                'type'                => 'segment',
-                'options.route'       => '/album[/:action][/:id]',
+                'type' => 'segment',
+                'options.route' => '/album[/:action][/:id]',
                 'options.constraints' => array(
                     'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                    'id'     => '[0-9]+',
+                    'id' => '[0-9]+',
                 ),
                 'options.defaults' => array(
                     'controller' => 'Album\Controller\Album',
-                    'action'     => 'index',
+                    'action' => 'index',
                 ),
             ),
 
@@ -112,16 +112,16 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
             'router' => array(
                 'routes' => array(
                     'album' => array(
-                        'type'    => 'segment',
+                        'type' => 'segment',
                         'options' => array(
-                            'route'    => '/album[/:action][/:id]',
+                            'route' => '/album[/:action][/:id]',
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id'     => '[0-9]+',
+                                'id' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'Album\Controller\Album',
-                                'action'     => 'index',
+                                'action' => 'index',
                             ),
                         ),
                     ),
@@ -131,7 +131,7 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($expect, $config);
     }
-    
+
     /**
      * Tests that keys can be overridden when specified multiple times.
      *
@@ -181,7 +181,7 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that overriding non-array keys throws an exception.
      *
-     * @expectedException \Best\DotNotation\KeyAlreadyExistsException
+     * @expectedException \Best\DotNotation\InconsistentKeyTypes
      * @return void
      */
     public function testOverridingNonArrayKeysThrowsAnException()
@@ -201,15 +201,13 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
     public function testChangingAKeyToANonArrayWithADottedKeyThrowsAnException()
     {
         $caught = false;
-        try
-        {
+        try {
             DotNotation::expand(array(
                 'my.dotted.key.other' => 'value2',
                 'my.dotted.key' => 'value1',
             ));
         }
-        catch (KeyAlreadyExistsException $exception)
-        {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('my.dotted.key', $exception->getMessage());
             $this->assertContains('from an array', $exception->getMessage());
@@ -225,15 +223,13 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
     public function testKeyPathIsIncludedInKeyAlreadyExistsException()
     {
         $caught = false;
-        try
-        {
+        try {
             DotNotation::expand(array(
                 'my.dotted.key' => 'value1',
                 'my.dotted.key.other' => 'value2'
             ));
         }
-        catch (KeyAlreadyExistsException $exception)
-        {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('my.dotted.key', $exception->getMessage());
             $this->assertContains('from a non-array', $exception->getMessage());
@@ -249,15 +245,13 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
     public function testKeyAlreadyExistsExceptionIsThrownAtToplevel()
     {
         $caught = false;
-        try
-        {
+        try {
             DotNotation::expand(array(
                 'scheduler.priority' => 42,
                 'scheduler' => 100,
             ));
         }
-        catch (KeyAlreadyExistsException $exception)
-        {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('scheduler', $exception->getMessage());
             $this->assertContains('from an array', $exception->getMessage());
@@ -309,7 +303,7 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals($expect, $config, 'Three backslashes failed!');
     }
-    
+
     /**
      * Tests that keys with an even number of backslashes are expanded, but the number is halved.
      *
@@ -400,15 +394,13 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
     public function testKeysAlreadyExistsIsThrownWhenAKeyAlreadyExistsAndIsAtTheTopLevel()
     {
         $caught = false;
-        try
-        {
+        try {
             DotNotation::expand(array(
                 'scheduler' => 102,
                 'scheduler.priority' => 42,
             ));
         }
-        catch (KeyAlreadyExistsException $exception)
-        {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('scheduler', $exception->getMessage());
             $this->assertContains('from a non-array', $exception->getMessage());
@@ -416,95 +408,4 @@ class DotNotationTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($caught, 'Exception was not thrown!');
     }
 
-    /**
-     * Tests that dots are compacted.
-     *
-     * @return void
-     */
-    public function testDotsAreCompacted()
-    {
-        $array = DotNotation::compact(array(
-            'foo' => array(
-                'bar' => array(
-                    'blah' => 'buzz',
-                    'subkey1' => array('subkey2' => 'subvalue'),
-                ),
-            ),
-        ));
-        $expect = array(
-            'foo.bar' => array(
-                'blah' => 'buzz',
-                'subkey1.subkey2' => 'subvalue'
-            )
-        );
-        $this->assertEquals($expect, $array);
-    }
-
-    /**
-     * Tests that dots are compacted correctly with non-indexed arrays.
-     *
-     * @return void
-     */
-    public function testDotsAreCompactedCorrectlyWithNonIndexedArrays()
-    {
-        $array = DotNotation::compact(array(
-            'foo' => array(
-                'bar' => array(
-                    'buzz',
-                    'baz' => array('foo'),
-                ),
-            ),
-            'key' => array(
-                'subkey1' => array(
-                    'subkey2' => array(
-                        array('value')
-                    )
-                )
-            )
-        ));
-        $expect = array(
-            'foo.bar' => array(
-                'buzz',
-                'baz' => array('foo')
-            ),
-            'key.subkey1.subkey2' => array(
-                array('value')
-            )
-        );
-        $this->assertEquals($expect, $array);
-    }
-
-    /**
-     * Tests that dots are escaped when compacting.
-     *
-     * @return void
-     */
-    public function testDotsAreEscapedWhenCompacting() 
-    {
-        $array = DotNotation::compact(array(
-            'foo.bar' => array(
-                'bar' => array(
-                    'buzz',
-                    'baz' => array('foo'),
-                ),
-            ),
-            'key' => array(
-                'subkey1' => array(
-                    'subkey2.dotted' => array(
-                        array('value')
-                    )
-                )
-            )
-        ));
-        $expect = array(
-            'foo\.bar.bar' => array(
-                'buzz',
-                'baz' => array('foo')
-            ),
-            'key.subkey1.subkey2\.dotted' => array(
-                array('value')
-            )
-        );
-        $this->assertEquals($expect, $array);
-    }
 }
