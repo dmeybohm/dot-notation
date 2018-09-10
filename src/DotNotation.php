@@ -30,7 +30,7 @@ final class DotNotation
         self::checkKeyPath($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
 
-        while ($array && $keys) {
+        while ($keys) {
             $key = array_shift($keys);
 
             if (array_key_exists($key, $array)) {
@@ -76,8 +76,8 @@ final class DotNotation
      * @param array $array
      * @param string $keyPath
      * @param mixed $value The value to set in the array.
-     * @return array The resulting array with the value set.
      *
+     * @return array The resulting array with the value set.
      * @throws BadKeyPath
      * @throws InconsistentKeyTypes
      */
@@ -104,7 +104,49 @@ final class DotNotation
                 }
             }
             else {
-                $ptr[$key] = array();
+                $ptr[$key] = $keys ? array() : $value;
+                $ptr = &$ptr[$key];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Set the dotted key path in the array and return the value.
+     *
+     * If any key already exists and is not an array, convert the key to an array so
+     * that the value can be set.
+     *
+     * @param array $array
+     * @param string $keyPath
+     * @param mixed $value The value to set in the array.
+     *
+     * @return array The resulting array with the value set.
+     * @throws BadKeyPath
+     */
+    public static function setAndOverride(array $array, $keyPath, $value)
+    {
+        self::checkKeyPath($keyPath);
+        $keys = self::explodeKeys(strval($keyPath));
+        $result = $array;
+        $ptr = &$result;
+
+        while ($keys) {
+            $key = array_shift($keys);
+
+            if (array_key_exists($key, $ptr)) {
+                $ptr = &$ptr[$key];
+                if (!$keys) {
+                    $ptr = $value;
+                    break;
+                }
+                elseif (!is_array($ptr)) {
+                    $ptr = array();
+                }
+            }
+            else {
+                $ptr[$key] = $keys ? array() : $value;
                 $ptr = &$ptr[$key];
             }
         }
@@ -221,23 +263,17 @@ final class DotNotation
 
         foreach ($array as $key => $value) {
             $escapedKey = self::escapeKey($key);
+            $extraKeyPath = "";
 
-            if (self::isCompactableArray($value)) {
-                $extraKey = "";
-                do {
-                    $firstValue = reset($value);
-                    $firstKey = key($value);
+            while (self::isCompactableArray($value)) {
+                $nextValue = reset($value);
+                $compactKey = key($value);
 
-                    $extraKey .= "." . self::escapeKey($firstKey);
-                    $value = $firstValue;
-                }
-                while (self::isCompactableArray($value));
-
-                $result[$escapedKey . $extraKey] = self::compactKeys($value);
+                $extraKeyPath .= "." . self::escapeKey($compactKey);
+                $value = $nextValue;
             }
-            else {
-                $result[$escapedKey] = self::compactKeys($value);
-            }
+
+            $result[$escapedKey . $extraKeyPath] = self::compactValue($value);
         }
 
         return $result;
@@ -262,7 +298,7 @@ final class DotNotation
      *
      * @return mixed The compacted value.
      */
-    private static function compactKeys($value)
+    private static function compactValue($value)
     {
         if (is_array($value)) {
             return self::compact($value);
