@@ -52,6 +52,10 @@ class ExplodeKeysTest extends \PHPUnit\Framework\TestCase
                 'keyPath' => 'foo\.bar\.baz',
                 'expected' => array('foo.bar.baz')
             ),
+            'double backslashes' => array(
+                'keyPath' => 'foo\\\\.bar\\\\.baz',
+                'expected' => array('foo\\.bar\\.baz')
+            ),
         );
     }
 
