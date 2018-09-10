@@ -77,3 +77,6 @@ final class InconsistentKeyTypes extends Exception
         return $message;
     }
 }
+
+// For backwards compatibility:
+class_alias('\Best\DotNotation\InconsistentKeyTypes', '\Best\DotNotation\KeyAlreadyExistsException');
