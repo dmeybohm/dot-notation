@@ -499,34 +499,37 @@ final class DotNotation
      *
      * @param string $keyPath
      * @return array
+     * @throws BadKeyPath
      */
     private static function explodeKeys($keyPath)
     {
         $keys = explode('.', $keyPath);
         if (strpos($keyPath, '\\.') === false) {
-            return $keys;
+            return array_filter($keys, function($elem) { return $elem !== ''; });
         }
 
         //
         // This is the slow path, where the keys contain escaped dots:
         //
-        $joinKeys = array();
-        foreach ($keys as $index => $key) {
-            if ($key[strlen($key) - 1] === '\\') {
-                $joinKeys[$index + 1] = true;
-            }
-        }
-
+        $joinNext = false;
         $result = array();
         $next = 0;
         foreach ($keys as $index => $key) {
-            if (array_key_exists($index, $joinKeys)) {
+            $len = strlen($key);
+            if ($len === 0) {
+                continue;
+            }
+            $endsWithBackslash = $key[$len - 1] === '\\';
+            if ($joinNext) {
                 $result[$next - 1] = sprintf("%s.%s", substr($result[$next - 1], 0, -1), $key);
+                $joinNext = $endsWithBackslash;
+                continue;
             }
-            else {
-                $result[$next] = $key;
-                $next += 1;
+            elseif ($endsWithBackslash) {
+                $joinNext = true;
             }
+            $result[$next] = $key;
+            $next += 1;
         }
 
         return $result;
