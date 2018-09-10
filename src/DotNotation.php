@@ -279,7 +279,7 @@ final class DotNotation
      * @param bool $integerKeysIncluded Whether to flatten integer keys as well.
      * @return array The flattened array.
      */
-    public static function doCompact(array $array, $integerKeysIncluded = true)
+    private static function doCompact(array $array, $integerKeysIncluded = true)
     {
         $result = array();
 
