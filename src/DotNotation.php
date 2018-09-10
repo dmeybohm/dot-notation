@@ -100,7 +100,7 @@ final class DotNotation
                     break;
                 }
                 elseif (!is_array($ptr)) {
-                    self::throwInconsistentKeyTypes($ptr, $parentKeys);
+                    self::throwInconsistentKeyTypes($ptr, array(), $parentKeys);
                 }
             }
             else {
@@ -254,10 +254,32 @@ final class DotNotation
      * Compact an expanded array to a DotNotation array.
      *
      * @param array $array The array to compact.
-     *
      * @return array The compacted array.
      */
     public static function compact(array $array)
+    {
+        return self::doCompact($array, false);
+    }
+
+    /**
+     * Compact an expanded array to a DotNotation array, including integer keys.
+     *
+     * @param array $array The array to compact.
+     * @return array The compacted array.
+     */
+    public static function compactWithIntegerKeys(array $array)
+    {
+        return self::doCompact($array, true);
+    }
+
+    /**
+     * Compact an expanded array to a DotNotation array.
+     *
+     * @param array $array
+     * @param bool $integerKeysIncluded Whether to flatten integer keys as well.
+     * @return array The flattened array.
+     */
+    public static function doCompact(array $array, $integerKeysIncluded = true)
     {
         $result = array();
 
@@ -265,7 +287,7 @@ final class DotNotation
             $escapedKey = self::escapeKey($key);
             $extraKeyPath = "";
 
-            while (self::isCompactableArray($value)) {
+            while (self::isCompactableArray($value, $integerKeysIncluded)) {
                 $nextValue = reset($value);
                 $compactKey = key($value);
 
@@ -323,7 +345,7 @@ final class DotNotation
         $top = array_shift($references);
 
         $ref = end($references);
-        while ($ref) {
+        while (key($references) !== null) {
             $values = array($ref => $values);
             $ref = prev($references);
         }
@@ -428,7 +450,7 @@ final class DotNotation
             $result = $newValue;
         }
         else {
-            self::throwInconsistentKeyTypes($originalValue, $parentKeys);
+            self::throwInconsistentKeyTypes($originalValue, $newValue, $parentKeys);
         }
 
         return $result;
@@ -437,16 +459,16 @@ final class DotNotation
     /**
      * Handle changing a key to an array or vice-versa.
      *
-     * @param  mixed $originalValue First value.
-     * @param  array $parentKeys Key path to parents used for error reporting.
+     * @param mixed $originalValue First value.
+     * @param mixed $newValue
+     * @param array $parentKeys Key path to parents used for error reporting.
      *
      * @return void
-     * @throws InconsistentKeyTypes
      */
-    private static function throwInconsistentKeyTypes($originalValue, array $parentKeys)
+    private static function throwInconsistentKeyTypes($originalValue, $newValue, array $parentKeys)
     {
         $parentKeyPath = implode('.', $parentKeys);
-        throw new InconsistentKeyTypes($originalValue, $parentKeyPath);
+        throw new InconsistentKeyTypes($originalValue, $newValue, $parentKeyPath);
     }
 
     /**
@@ -469,16 +491,17 @@ final class DotNotation
      * An array is compactable if it has only one key that is not an integer or integer-like string.
      *
      * @param mixed $value
+     * @param bool $integerKeysIncluded
      * @return bool
      */
-    private static function isCompactableArray($value)
+    private static function isCompactableArray($value, $integerKeysIncluded)
     {
         if (!is_array($value)) {
             return false;
         }
         reset($value);
         $firstKey = key($value);
-        if (self::isInteger($firstKey)) {
+        if (!$integerKeysIncluded && self::isInteger($firstKey)) {
             return false;
         }
         next($value);

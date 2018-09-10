@@ -4,7 +4,7 @@ namespace Best\DotNotation\Test;
 
 use Best\DotNotation\InconsistentKeyTypes;
 
-class KeyAlreadyExistsTest extends \PHPUnit\Framework\TestCase
+class InconsistentKeyTypesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * Tests that KeyAlreadyExists can be instantiated.
@@ -13,7 +13,7 @@ class KeyAlreadyExistsTest extends \PHPUnit\Framework\TestCase
      */
     public function testKeyAlreadyExistsCanBeInstantiated()
     {
-        $this->assertNotNull(new InconsistentKeyTypes('foo', 'foo.bar'));
+        $this->assertNotNull(new InconsistentKeyTypes('foo',  array('bar'), 'foo.bar'));
     }
 
     /**
@@ -22,6 +22,6 @@ class KeyAlreadyExistsTest extends \PHPUnit\Framework\TestCase
      */
     public function testDefaultErrorMessage()
     {
-        throw new InconsistentKeyTypes('bar', 'foo.bar');
+        throw new InconsistentKeyTypes('bar', array('baz'), 'foo.bar');
     }
 }

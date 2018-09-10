@@ -407,4 +407,28 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($caught, 'Exception was not thrown!');
     }
 
+    public function testKeysWithNumbersAreExpanded()
+    {
+        $array = array(
+            '0.Foobar.baz' => 'cheese',
+            '1.Foobar.blah.0' => 'something else'
+        );
+        $expected = array(
+            array(
+                'Foobar' => array(
+                    'baz' => 'cheese'
+                )
+            ),
+            array(
+                'Foobar' => array(
+                    'blah' => array(
+                        'something else'
+                    )
+                )
+            )
+        );
+        $this->assertEquals($expected, DotNotation::expand($array));
+    }
+
+
 }
