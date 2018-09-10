@@ -58,8 +58,7 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
             ),
             'service_manager' => array(
                 'factories' => array(
-                    'Zend\Db\Adapter\Adapter'
-                    => 'Zend\Db\Adapter\AdapterServiceFactory',
+                    'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
                 ),
             )
         );

@@ -6,53 +6,143 @@ use Best\DotNotation;
 
 class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
 {
-    public function testGet()
+    /**
+     * @dataProvider provideGet
+     */
+    public function testGet($data, $keyPath, $expected)
     {
-        $arrayOne = array('foo' => array('baz' => 'cheese'));
-        $this->assertEquals('cheese', DotNotation::get($arrayOne, 'foo.baz'));
+        $this->assertEquals($expected, DotNotation::get($data, $keyPath));
+    }
+
+    public function provideGet()
+    {
+        return array(
+            'get empty array' => array(
+                'data' => array('foo' => array()),
+                'keyPath' => 'foo',
+                'expected' => array()
+            ),
+            'get empty array as second key' => array(
+                'data' => array('foo' => array('bar' => array())),
+                'keyPath' => 'foo.bar',
+                'expected' => array()
+            ),
+            'get one path' => array(
+                'data' => array('foo' => array('baz' => 'cheese')),
+                'keyPath' => 'foo.baz',
+                'expected' => 'cheese'
+            ),
+            'indexed array 1' => array(
+                'data' => array('foo' => array('baz' => array('cheese', 'mozzarella'))),
+                'keyPath' => 'foo.baz.0',
+                'expected' => 'cheese'
+            ),
+            'indexed array 2' => array(
+                'data' => array('foo' => array('baz' => array('cheese', 'mozzarella'))),
+                'keyPath' => 'foo.baz.1',
+                'expected' => 'mozzarella'
+            ),
+        );
     }
 
     /**
      * @dataProvider provideInvalidKeyPath
      * @expectedException \Best\DotNotation\BadKeyPath
      */
-    public function testGetThrowsInvalidArgumentExceptionForInvalidKeyPaths($keyPath)
+    public function testGetThrowsBadKeyPath($keyPath)
     {
         $arrayOne = array('foo' => array('baz' => 'cheese'));
         $this->assertEquals('cheese', DotNotation::get($arrayOne, $keyPath));
     }
 
-    public function testGetCanHandleIndexedArrays()
-    {
-        $arrayOne = array('foo' => array('baz' => array('cheese', 'mozzarella')));
-        $this->assertEquals('mozzarella', DotNotation::get($arrayOne, 'foo.baz.1'));
-    }
-
     /**
      * @expectedException \Best\DotNotation\KeyNotFound
      */
-    public function testGetThrowsKeyNotFoundIfKeyIsNotFound()
+    public function testGetThrowsKeyNotFound()
     {
         $arrayOne = array('foo' => array('baz' => 'cheese'));
         $this->assertEquals('cheese', DotNotation::get($arrayOne, 'foo.undefined'));
     }
 
-    public function testGetOrDefaultReturnsDefaultValueIfKeyIsNotFound()
+    /**
+     * @dataProvider provideGet
+     */
+    public function testGetOrDefaultImitatesGet($data, $keyPath, $expected)
     {
-        $arrayOne = array('foo' => array('baz' => 'cheese'));
-        $this->assertEquals('default value',
-            DotNotation::getOrDefault($arrayOne, 'foo.undefined', 'default value'));
+        $this->assertEquals($expected, DotNotation::getOrDefault($data, $keyPath));
     }
 
-    public function testSet()
+    /**
+     * @dataProvider provideGetOrDefault
+     */
+    public function testGetOrDefault($data, $keyPath, $expected)
     {
-        $arrayIntoArray = array('foo' => array('bar' => 'cheese'));
-        $arrayExpected = array('foo' => array('bar' => array('into array')));
-        $this->assertEquals($arrayExpected, DotNotation::set($arrayIntoArray, 'foo.bar', array('into array')));
+        $this->assertEquals($expected, DotNotation::getOrDefault($data, $keyPath));
+    }
 
-        $arrayIntoNull = array('foo' => array('bar' => 'cheese'));
-        $nullExpected = array('foo' => array('bar' => null));
-        $this->assertEquals($nullExpected, DotNotation::set($arrayIntoNull, 'foo.bar', null));
+    public function provideGetOrDefault()
+    {
+        return array(
+            'second level key' => array(
+                'data' => array('foo' => array('baz' => 'cheese')),
+                'keyPath' => 'foo.undefined',
+                'expected' => null
+            ),
+            'first level key' => array(
+                'data' => array('foo' => array('baz' => 'cheese')),
+                'keyPath' => 'bar',
+                'expected' => null
+            ),
+            'get value' => array(
+                'data' => array('foo' => array('baz' => 'cheese')),
+                'keyPath' => 'foo.baz',
+                'expected' => 'cheese'
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideSet
+     */
+    public function testSet($data, $keyPath, $value, $expected)
+    {
+        $this->assertEquals($expected, DotNotation::set($data, $keyPath, $value));
+    }
+
+    public function provideSet()
+    {
+        return array(
+            'override array' => array(
+                'data' => array('foo' => array('bar' => 'cheese')),
+                'keyPath' => 'foo.bar',
+                'value' => array('into array'),
+                'expected' => array('foo' => array('bar' => array('into array'))),
+            ),
+            'set null' => array(
+                'data' => array('foo' => array('bar' => 'cheese')),
+                'keyPath' => 'foo.bar',
+                'value' => null,
+                'expected' => array('foo' => array('bar' => null)),
+            ),
+            'inside empty array' => array(
+                'data' => array(),
+                'keyPath' => 'foo',
+                'value' => 'cheese',
+                'expected' => array('foo' => 'cheese'),
+            ),
+            'inside empty array nested' => array(
+                'data' => array(),
+                'keyPath' => 'foo.bar',
+                'value' => 'cheese',
+                'expected' => array('foo' => array('bar' => 'cheese')),
+            ),
+            'truncate array values without exception' => array(
+                'data' => array(),
+                'keyPath' => 'foo.bar',
+                'value' => 'cheese',
+                'expected' => array('foo' => array('bar' => 'cheese')),
+            ),
+        );
     }
 
     /**
@@ -66,12 +156,6 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($arrayExpected, DotNotation::set($arrayIntoArray, $keyPath, array('into array')));
     }
 
-    public function testSetInsideEmptyArray()
-    {
-        $nullExpected = array('foo' => array('bar' => 'cheese'));
-        $this->assertEquals($nullExpected, DotNotation::set(array(), 'foo.bar', 'cheese'));
-    }
-
     /**
      * @expectedException \Best\DotNotation\InconsistentKeyTypes
      */
@@ -79,19 +163,6 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
     {
         $data = array('foo' => array('bar' => true));
         DotNotation::set($data, 'foo.bar.cheese', 'mozzarella');
-    }
-
-    public function testSetAndOverrideInsideEmptyArray()
-    {
-        $nullExpected = array('foo' => array('bar' => 'cheese'));
-        $this->assertEquals($nullExpected, DotNotation::setAndOverride(array(), 'foo.bar', 'cheese'));
-    }
-
-    public function testSetAndOverrideOverridesNonArrayKeys()
-    {
-        $data = array('foo' => array('bar' => true));
-        $expected = array('foo' => array('bar' => array('cheese' => 'mozzarella')));
-        $this->assertEquals($expected, DotNotation::setAndOverride($data, 'foo.bar.cheese', 'mozzarella'));
     }
 
     /**
@@ -103,23 +174,72 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
         DotNotation::set($array, 'foo.non_array.cheese', array('into array'));
     }
 
-    public function testSetCanTruncateArrayValuesWithoutException()
+    /**
+     * @dataProvider provideSet
+     */
+    public function testSetAndOverridePassesSetTest($data, $keyPath, $value, $expected)
     {
-        $array = array('foo' => array('array' => array('something else' => 'into another')));
-        $expected = array('foo' => array('array' => true));
-        $this->assertEquals($expected, DotNotation::set($array, 'foo.array', true));
+        $this->assertEquals($expected, DotNotation::setAndOverride($data, $keyPath, $value));
     }
 
-    public function testRemove()
+    /**
+     * @dataProvider provideSetAndOverride
+     */
+    public function testSetAndOverride($data, $keyPath, $value, $expected)
     {
-        $array = array('foo' => array('array' => array('something else' => 'into another')));
-        $this->assertEquals(array('foo' => array()), DotNotation::remove($array, 'foo.array'));
+        $this->assertEquals($expected, DotNotation::setAndOverride($data, $keyPath, $value));
+    }
 
-        $indexedArray = array('foo' => array('array' => array('something else', 'into another')));
-        $this->assertEquals(array('foo' => array('array' => array('something else'))),
-            DotNotation::remove($indexedArray, 'foo.array.1'));
-        $this->assertEquals(array('foo' => array('array' => array(1 => 'into another'))),
-            DotNotation::remove($indexedArray, 'foo.array.0'));
+    public function provideSetAndOverride()
+    {
+        return array(
+            'inside empty array' => array(
+                'data' => array(),
+                'keyPath' => 'foo.bar',
+                'value' => 'cheese',
+                'expected' => array('foo' => array('bar' => 'cheese'))
+            ),
+            'override non-array keys' => array(
+                'data' => array('foo' => array('bar' => true)),
+                'keyPath' => 'foo.bar.cheese',
+                'value' => 'mozzarella',
+                'expected' => array('foo' => array('bar' => array('cheese' => 'mozzarella')))
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider provideRemove
+     */
+    public function testRemove($data, $keyPath, $expected)
+    {
+        $this->assertEquals($expected, DotNotation::remove($data, $keyPath));
+    }
+
+    public function provideRemove()
+    {
+        return array(
+            'remove child key' => array(
+                'data' => array('foo' => array('array' => array('something else' => 'into another'))),
+                'keyPath' => 'foo.array',
+                'expected' => array('foo' => array())
+            ),
+            'remove top key' => array(
+                'data' => array('foo' => array('array' => array('something else' => 'into another'))),
+                'keyPath' => 'foo',
+                'expected' => array()
+            ),
+            'indexed key 1' => array(
+                'data' => array('foo' => array('array' => array('something else', 'into another'))),
+                'keyPath' => 'foo.array.0',
+                'expected' => array('foo' => array('array' => array(1 => 'into another')))
+            ),
+            'indexed key 2' => array(
+                'data' => array('foo' => array('array' => array('something else', 'into another'))),
+                'keyPath' => 'foo.array.1',
+                'expected' => array('foo' => array('array' => array('something else')))
+            ),
+        );
     }
 
     /**
@@ -140,10 +260,41 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
         DotNotation::remove($array, 'undefined');
     }
 
-    public function testRemoveIfExistsDoesNotThrowIfKeyDoesNotExist()
+    /**
+     * @dataProvider provideRemove
+     */
+    public function testRemoveIfExistsImitatesRemove($data, $keyPath, $expected)
     {
-        $array = array('foo' => array('array' => array('something else' => 'into another')));
-        $this->assertEquals($array, DotNotation::removeIfExists($array, 'undefined'));
+        $this->assertEquals($expected, DotNotation::removeIfExists($data, $keyPath));
+    }
+
+    /**
+     * @dataProvider provideRemoveIfExists
+     */
+    public function testRemoveIfExists($data, $keyPath, $expected)
+    {
+        $this->assertEquals($expected, DotNotation::removeIfExists($data, $keyPath));
+    }
+
+    public function provideRemoveIfExists()
+    {
+        return array(
+            'undefined parent key' => array(
+                'data' => array('foo' => array('array' => array('something else' => 'into another'))),
+                'keyPath' => 'undefined',
+                'expected' => array('foo' => array('array' => array('something else' => 'into another')))
+            ),
+            'undefined child key' => array(
+                'data' => array('foo' => array('array' => array('something else' => 'into another'))),
+                'keyPath' => 'foo.array.something else.missing key',
+                'expected' => array('foo' => array('array' => array('something else' => 'into another')))
+            ),
+            'child key with space' => array(
+                'data' => array('foo' => array('array' => array('something else' => 'into another'))),
+                'keyPath' => 'foo.array.something else',
+                'expected' => array('foo' => array('array' => array()))
+            ),
+        );
     }
 
     public function provideInvalidKeyPath()
