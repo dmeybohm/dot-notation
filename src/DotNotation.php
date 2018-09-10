@@ -100,11 +100,11 @@ final class DotNotation
                     break;
                 }
                 elseif (!is_array($ptr)) {
-                    self::throwInconsistentKeyTypes($ptr, array(), $parentKeys);
+                    throw new InconsistentKeyTypes($ptr, array(), implode('.', $parentKeys));
                 }
             }
             else {
-                $ptr[$key] = $keys ? array() : $value;
+                $ptr[$key] = $keys === array() ? $value : array();
                 $ptr = &$ptr[$key];
             }
         }
@@ -146,7 +146,7 @@ final class DotNotation
                 }
             }
             else {
-                $ptr[$key] = $keys ? array() : $value;
+                $ptr[$key] = $keys === array() ? $value : array();
                 $ptr = &$ptr[$key];
             }
         }
@@ -304,13 +304,13 @@ final class DotNotation
     /**
      * Escape keys.
      *
-     * @param string $key The key to escape.
+     * @param string|int $key The key to escape.
      *
      * @return string
      */
     private static function escapeKey($key)
     {
-        return str_replace(".", "\\.", $key);
+        return str_replace(".", "\\.", (string)$key);
     }
 
     /**
@@ -333,7 +333,7 @@ final class DotNotation
     /**
      * Dereference an array of keys and append the result to an array.
      *
-     * @param array &$result The resulting array to append to.
+     * @param array $result The resulting array to append to.
      * @param array $references The dotted key as an array of strings.
      * @param mixed $values The values the dotted key points to.
      *
@@ -443,32 +443,15 @@ final class DotNotation
         $newIsArray = is_array($newValue);
 
         if ($originalIsArray && $newIsArray) {
-            $result = self::mergeArraysRecursively($originalValue, $newValue, $parentKeys);
+            return self::mergeArraysRecursively($originalValue, $newValue, $parentKeys);
         }
         elseif (!$originalIsArray && !$newIsArray) {
             // Value from the second array overrides the first:
-            $result = $newValue;
+            return $newValue;
         }
         else {
-            self::throwInconsistentKeyTypes($originalValue, $newValue, $parentKeys);
+            throw new InconsistentKeyTypes($originalValue, $newValue, implode('.', $parentKeys));
         }
-
-        return $result;
-    }
-
-    /**
-     * Handle changing a key to an array or vice-versa.
-     *
-     * @param mixed $originalValue First value.
-     * @param mixed $newValue
-     * @param array $parentKeys Key path to parents used for error reporting.
-     *
-     * @return void
-     */
-    private static function throwInconsistentKeyTypes($originalValue, $newValue, array $parentKeys)
-    {
-        $parentKeyPath = implode('.', $parentKeys);
-        throw new InconsistentKeyTypes($originalValue, $newValue, $parentKeyPath);
     }
 
     /**
@@ -476,6 +459,7 @@ final class DotNotation
      *
      * @param mixed $keyPath
      *
+     * @return void
      * @throws BadKeyPath
      */
     private static function checkKeyPath($keyPath)
