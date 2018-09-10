@@ -30,7 +30,7 @@ final class DotNotation
         self::checkKeyPath($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
 
-        while ($array && $keys) {
+        while ($keys) {
             $key = array_shift($keys);
 
             if (array_key_exists($key, $array)) {
