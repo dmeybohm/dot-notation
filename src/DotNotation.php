@@ -254,10 +254,32 @@ final class DotNotation
      * Compact an expanded array to a DotNotation array.
      *
      * @param array $array The array to compact.
-     *
      * @return array The compacted array.
      */
     public static function compact(array $array)
+    {
+        return self::doCompact($array, false);
+    }
+
+    /**
+     * Compact an expanded array to a DotNotation array, including integer keys.
+     *
+     * @param array $array The array to compact.
+     * @return array The compacted array.
+     */
+    public static function compactWithIntegerKeys(array $array)
+    {
+        return self::doCompact($array, true);
+    }
+
+    /**
+     * Compact an expanded array to a DotNotation array.
+     *
+     * @param array $array
+     * @param bool $integerKeysIncluded Whether to flatten integer keys as well.
+     * @return array The flattened array.
+     */
+    public static function doCompact(array $array, $integerKeysIncluded = true)
     {
         $result = array();
 
@@ -265,7 +287,7 @@ final class DotNotation
             $escapedKey = self::escapeKey($key);
             $extraKeyPath = "";
 
-            while (self::isCompactableArray($value)) {
+            while (self::isCompactableArray($value, $integerKeysIncluded)) {
                 $nextValue = reset($value);
                 $compactKey = key($value);
 
@@ -323,7 +345,7 @@ final class DotNotation
         $top = array_shift($references);
 
         $ref = end($references);
-        while ($ref) {
+        while (key($references) !== null) {
             $values = array($ref => $values);
             $ref = prev($references);
         }
@@ -469,16 +491,17 @@ final class DotNotation
      * An array is compactable if it has only one key that is not an integer or integer-like string.
      *
      * @param mixed $value
+     * @param bool $integerKeysIncluded
      * @return bool
      */
-    private static function isCompactableArray($value)
+    private static function isCompactableArray($value, $integerKeysIncluded)
     {
         if (!is_array($value)) {
             return false;
         }
         reset($value);
         $firstKey = key($value);
-        if (self::isInteger($firstKey)) {
+        if (!$integerKeysIncluded && self::isInteger($firstKey)) {
             return false;
         }
         next($value);

@@ -99,4 +99,46 @@ class CompactTest extends TestCase
         $this->assertEquals($expect, $array);
     }
 
+    /**
+     * @dataProvider provideCompactWithIntegerKeys
+     */
+    public function testCompactWithIntegerKeys($data, $expected)
+    {
+        $this->assertEquals($expected, DotNotation::compactWithIntegerKeys($data));
+    }
+
+    public function provideCompactWithIntegerKeys()
+    {
+        return array(
+            'collapse integer key at top' => array(
+                'data' => array(array('foo' => array('bar' => 'cheese'))),
+                'expected' => array(
+                    '0.foo.bar' => 'cheese'
+                )
+            ),
+            'key at top with more than one element' => array(
+                'data' => array(
+                    array('foo' => array('bar' => 'cheese')),
+                    array('baz' => array('bar' => 'cheese')),
+                ),
+                'expected' => array(
+                    '0.foo.bar' => 'cheese',
+                    '1.baz.bar' => 'cheese',
+                )
+            ),
+            'collapse integer key at grandchild' => array(
+                'data' => array(array('foo' => array('bar' => array('cheese')))),
+                'expected' => array(
+                    '0.foo.bar.0' => 'cheese',
+                )
+            ),
+            'collapse integer key at grandchild with more than one element' => array(
+                'data' => array(array('foo' => array('bar' => array('cheese', 'mozzarella')))),
+                'expected' => array(
+                    '0.foo.bar' => array('cheese', 'mozzarella')
+                )
+            ),
+        );
+    }
+
 }
