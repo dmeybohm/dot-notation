@@ -401,16 +401,16 @@ final class DotNotation
     /**
      * Handle changing a key to an array or vice-versa.
      *
-     * @param  mixed $value First value.
+     * @param  mixed $originalValue First value.
      * @param  array $parentKeys Key path to parents used for error reporting.
      *
      * @return void
      * @throws KeyAlreadyExists
      */
-    private static function throwKeyAlreadyExists($value, array $parentKeys)
+    private static function throwKeyAlreadyExists($originalValue, array $parentKeys)
     {
         $parentKeyPath = implode('.', $parentKeys);
-        throw new KeyAlreadyExists($value, $parentKeyPath);
+        throw new KeyAlreadyExists($originalValue, $parentKeyPath);
     }
 
     /**
