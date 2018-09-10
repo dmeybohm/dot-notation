@@ -185,7 +185,7 @@ final class DotNotation
         $result = array();
 
         foreach ($array as $key => $value) {
-            $references = self::explodeKeys($key);
+            $references = self::explodeKeys(strval($key));
             $value = self::getValue($value);
 
             if (count($references) == 1) {
