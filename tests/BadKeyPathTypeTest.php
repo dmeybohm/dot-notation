@@ -2,22 +2,22 @@
 
 namespace Best\DotNotation\Test;
 
-use Best\DotNotation\BadKey;
+use Best\DotNotation\BadKeyPath;
 
 class BadKeyPathTypeTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreateNewInstance()
     {
-        $this->assertNotNull(new BadKey('hello'));
+        $this->assertNotNull(new BadKeyPath('hello'));
     }
 
     /**
-     * @expectedException \Best\DotNotation\BadKey
+     * @expectedException \Best\DotNotation\BadKeyPath
      * @expectedExceptionMessageRegExp /Variable is not a string or int.*true/
      */
     public function testThrowingExceptionContainsDefaultMessage()
     {
-        throw new BadKey(true);
+        throw new BadKeyPath(true);
     }
 
 }

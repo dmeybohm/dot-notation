@@ -3,7 +3,7 @@
 namespace Best\DotNotation\Test;
 
 use Best\DotNotation;
-use Best\DotNotation\KeyAlreadyExists;
+use Best\DotNotation\InconsistentKeyTypes;
 
 class ExpandTest extends \PHPUnit\Framework\TestCase
 {
@@ -181,7 +181,7 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that overriding non-array keys throws an exception.
      *
-     * @expectedException \Best\DotNotation\KeyAlreadyExists
+     * @expectedException \Best\DotNotation\InconsistentKeyTypes
      * @return void
      */
     public function testOverridingNonArrayKeysThrowsAnException()
@@ -207,7 +207,7 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
                 'my.dotted.key' => 'value1',
             ));
         }
-        catch (KeyAlreadyExists $exception) {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('my.dotted.key', $exception->getMessage());
             $this->assertContains('from an array', $exception->getMessage());
@@ -229,7 +229,7 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
                 'my.dotted.key.other' => 'value2'
             ));
         }
-        catch (KeyAlreadyExists $exception) {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('my.dotted.key', $exception->getMessage());
             $this->assertContains('from a non-array', $exception->getMessage());
@@ -251,7 +251,7 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
                 'scheduler' => 100,
             ));
         }
-        catch (KeyAlreadyExists $exception) {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('scheduler', $exception->getMessage());
             $this->assertContains('from an array', $exception->getMessage());
@@ -400,7 +400,7 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
                 'scheduler.priority' => 42,
             ));
         }
-        catch (KeyAlreadyExists $exception) {
+        catch (InconsistentKeyTypes $exception) {
             $caught = true;
             $this->assertContains('scheduler', $exception->getMessage());
             $this->assertContains('from a non-array', $exception->getMessage());

@@ -2,8 +2,8 @@
 
 namespace Best;
 
-use Best\DotNotation\BadKey;
-use Best\DotNotation\KeyAlreadyExists;
+use Best\DotNotation\BadKeyPath;
+use Best\DotNotation\InconsistentKeyTypes;
 use Best\DotNotation\KeyNotFound;
 
 final class DotNotation
@@ -23,7 +23,7 @@ final class DotNotation
      *
      * @return mixed The returned value, or the default value if no value is found.
      * @throws KeyNotFound
-     * @throws BadKey
+     * @throws BadKeyPath
      */
     public static function get(array $array, $keyPath)
     {
@@ -78,8 +78,8 @@ final class DotNotation
      * @param mixed $value The value to set in the array.
      * @return array The resulting array with the value set.
      *
-     * @throws BadKey
-     * @throws KeyAlreadyExists
+     * @throws BadKeyPath
+     * @throws InconsistentKeyTypes
      */
     public static function set(array $array, $keyPath, $value)
     {
@@ -100,7 +100,7 @@ final class DotNotation
                     break;
                 }
                 elseif (!is_array($ptr)) {
-                    self::throwKeyAlreadyExists($ptr, $parentKeys);
+                    self::throwInconsistentKeyTypes($ptr, $parentKeys);
                 }
             }
             else {
@@ -120,7 +120,7 @@ final class DotNotation
      * @return array The array with the value unset.
      *
      * @throws KeyNotFound
-     * @throws BadKey
+     * @throws BadKeyPath
      */
     public static function remove(array $array, $keyPath)
     {
@@ -178,7 +178,7 @@ final class DotNotation
      * @param  array $array Array to expand.
      *
      * @return array The expanded array.
-     * @throws KeyAlreadyExists
+     * @throws InconsistentKeyTypes
      */
     public static function expand(array $array)
     {
@@ -280,7 +280,7 @@ final class DotNotation
      * @param mixed $values The values the dotted key points to.
      *
      * @return void
-     * @throws DotNotation\KeyAlreadyExists
+     * @throws InconsistentKeyTypes
      */
     private static function dereferenceDots(&$result, $references, $values)
     {
@@ -317,7 +317,7 @@ final class DotNotation
      * @param mixed $value The value to get.
      *
      * @return mixed
-     * @throws KeyAlreadyExists
+     * @throws InconsistentKeyTypes
      */
     private static function expandValue($value)
     {
@@ -338,7 +338,7 @@ final class DotNotation
      * This is used instead of array_merge_recursive since that will turn
      * duplicated non-array values into arrays.
      *
-     * @throws \Best\DotNotation\KeyAlreadyExists if a key that already exists is changed to an
+     * @throws \Best\DotNotation\InconsistentKeyTypes if a key that already exists is changed to an
      *         array, or if an array is changed to a string.
      *
      * @param  array $firstArray First array to merge.
@@ -375,7 +375,7 @@ final class DotNotation
      * @param  mixed $newValue Second value to merge.
      * @param  array $parentKeys Key path to parents used for error reporting.
      *
-     * @throws \Best\DotNotation\KeyAlreadyExists if a key that already exists is changed to an
+     * @throws \Best\DotNotation\InconsistentKeyTypes if a key that already exists is changed to an
      *         array, or if an array is changed to a string.
      * @return array The merged values as an array, or the second value if both are scalars.
      */
@@ -387,12 +387,12 @@ final class DotNotation
         if ($originalIsArray && $newIsArray) {
             $result = self::mergeArraysRecursively($originalValue, $newValue, $parentKeys);
         }
-        elseif ( ! $originalIsArray && ! $newIsArray) {
+        elseif (!$originalIsArray && !$newIsArray) {
             // Value from the second array overrides the first:
             $result = $newValue;
         }
         else {
-            self::throwKeyAlreadyExists($originalValue, $parentKeys);
+            self::throwInconsistentKeyTypes($originalValue, $parentKeys);
         }
 
         return $result;
@@ -405,12 +405,12 @@ final class DotNotation
      * @param  array $parentKeys Key path to parents used for error reporting.
      *
      * @return void
-     * @throws KeyAlreadyExists
+     * @throws InconsistentKeyTypes
      */
-    private static function throwKeyAlreadyExists($originalValue, array $parentKeys)
+    private static function throwInconsistentKeyTypes($originalValue, array $parentKeys)
     {
         $parentKeyPath = implode('.', $parentKeys);
-        throw new KeyAlreadyExists($originalValue, $parentKeyPath);
+        throw new InconsistentKeyTypes($originalValue, $parentKeyPath);
     }
 
     /**
@@ -418,12 +418,12 @@ final class DotNotation
      *
      * @param mixed $keyPath
      *
-     * @throws BadKey
+     * @throws BadKeyPath
      */
     private static function checkKeyPath($keyPath)
     {
         if (!is_string($keyPath) && !is_int($keyPath)) {
-            throw new BadKey($keyPath);
+            throw new BadKeyPath($keyPath);
         }
     }
 
@@ -478,7 +478,7 @@ final class DotNotation
         $next = 0;
         foreach ($keys as $index => $key) {
             if (array_key_exists($index, $joinKeys)) {
-                $result[$next - 1] = sprintf("%s.%s", substr($result[$next - 1], 0,  -1), $key);
+                $result[$next - 1] = sprintf("%s.%s", substr($result[$next - 1], 0, -1), $key);
             }
             else {
                 $result[$next] = $key;

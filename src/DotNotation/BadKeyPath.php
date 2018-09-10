@@ -2,7 +2,7 @@
 
 namespace Best\DotNotation;
 
-class BadKey extends Exception
+class BadKeyPath extends Exception
 {
     /**
      * @var mixed

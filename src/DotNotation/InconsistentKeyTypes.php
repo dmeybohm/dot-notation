@@ -2,7 +2,7 @@
 
 namespace Best\DotNotation;
 
-final class KeyAlreadyExists extends Exception
+final class InconsistentKeyTypes extends Exception
 {
     /**
      * @var mixed

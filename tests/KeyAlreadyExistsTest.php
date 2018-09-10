@@ -2,7 +2,7 @@
 
 namespace Best\DotNotation\Test;
 
-use Best\DotNotation\KeyAlreadyExists;
+use Best\DotNotation\InconsistentKeyTypes;
 
 class KeyAlreadyExistsTest extends \PHPUnit\Framework\TestCase
 {
@@ -13,15 +13,15 @@ class KeyAlreadyExistsTest extends \PHPUnit\Framework\TestCase
      */
     public function testKeyAlreadyExistsCanBeInstantiated()
     {
-        $this->assertNotNull(new KeyAlreadyExists('foo', 'foo.bar'));
+        $this->assertNotNull(new InconsistentKeyTypes('foo', 'foo.bar'));
     }
 
     /**
-     * @expectedException \Best\DotNotation\KeyAlreadyExists
+     * @expectedException \Best\DotNotation\InconsistentKeyTypes
      * @expectedExceptionMessageRegExp /Attempting to change key 'foo.bar' from a non-array to an array/
      */
     public function testDefaultErrorMessage()
     {
-        throw new KeyAlreadyExists('bar', 'foo.bar');
+        throw new InconsistentKeyTypes('bar', 'foo.bar');
     }
 }
