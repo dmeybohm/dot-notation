@@ -186,14 +186,14 @@ final class DotNotation
 
         foreach ($array as $key => $value) {
             $references = self::explodeKeys((string)$key); // cast for performance
-            $value = self::getValue($value);
+            $value = self::expandValue($value);
 
-            if (count($references) == 1) {
+            if (count($references) === 1) {
                 $key = $references[0];
 
                 // If the result key is already set, we have to merge
                 // the two values.
-                if (isset($result[$key])) {
+                if (array_key_exists($key, $result)) {
                     $result[$key] = self::mergeTwoValues($result[$key], $value, array($key));
                 }
                 else {
@@ -292,7 +292,7 @@ final class DotNotation
             $ref = prev($references);
         }
 
-        if (isset($result[$top])) {
+        if (array_key_exists($top, $result)) {
             $result[$top] = self::mergeTwoValues($result[$top], $values, array($top));
         }
         else {
@@ -319,7 +319,7 @@ final class DotNotation
      * @return mixed
      * @throws KeyAlreadyExists
      */
-    private static function getValue($value)
+    private static function expandValue($value)
     {
         if (is_array($value)) {
             return self::expand($value);
@@ -352,7 +352,7 @@ final class DotNotation
         $result = $firstArray;
 
         foreach ($secondArray as $key => $value) {
-            if (isset($firstArray[$key])) {
+            if (array_key_exists($key, $firstArray)) {
                 array_push($parentKeys, $key);
                 $result[$key] = self::mergeTwoValues($firstArray[$key], $value, $parentKeys);
                 array_pop($parentKeys);
