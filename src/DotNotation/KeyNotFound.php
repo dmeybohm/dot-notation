@@ -2,7 +2,7 @@
 
 namespace Best\DotNotation;
 
-final class KeyNotFound extends InvalidKeyPath
+final class KeyNotFound extends Exception
 {
     /**
      * @var string

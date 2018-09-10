@@ -2,7 +2,7 @@
 
 namespace Best\DotNotation;
 
-final class KeyAlreadyExists extends InvalidKeyPath
+final class KeyAlreadyExists extends Exception
 {
     /**
      * @var mixed
