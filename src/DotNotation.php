@@ -371,28 +371,28 @@ final class DotNotation
      * This merges the values when they are arrays, and overrides the value in
      * the first array with the second otherwise.
      *
-     * @param  mixed $valueOne First value to merge.
-     * @param  mixed $valueTwo Second value to merge.
+     * @param  mixed $originalValue First value to merge.
+     * @param  mixed $newValue Second value to merge.
      * @param  array $parentKeys Key path to parents used for error reporting.
      *
      * @throws \Best\DotNotation\KeyAlreadyExists if a key that already exists is changed to an
      *         array, or if an array is changed to a string.
      * @return array The merged values as an array, or the second value if both are scalars.
      */
-    private static function mergeTwoValues($valueOne, $valueTwo, $parentKeys)
+    private static function mergeTwoValues($originalValue, $newValue, $parentKeys)
     {
-        $oneIsArray = is_array($valueOne);
-        $twoIsArray = is_array($valueTwo);
+        $originalIsArray = is_array($originalValue);
+        $newIsArray = is_array($newValue);
 
-        if ($oneIsArray && $twoIsArray) {
-            $result = self::mergeArraysRecursively($valueOne, $valueTwo, $parentKeys);
+        if ($originalIsArray && $newIsArray) {
+            $result = self::mergeArraysRecursively($originalValue, $newValue, $parentKeys);
         }
-        elseif ( ! $oneIsArray && ! $twoIsArray) {
+        elseif ( ! $originalIsArray && ! $newIsArray) {
             // Value from the second array overrides the first:
-            $result = $valueTwo;
+            $result = $newValue;
         }
         else {
-            self::throwKeyAlreadyExists($valueOne, $parentKeys);
+            self::throwKeyAlreadyExists($originalValue, $parentKeys);
         }
 
         return $result;
