@@ -59,11 +59,39 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      * @dataProvider provideInvalidKeyPath
      * @expectedException \Best\DotNotation\BadKeyPath
      */
-    public function testSetThrowsInvalidArgumentExceptionIfKeyPathIsNotAnIntegerOrString($keyPath)
+    public function testSetThrowsBadKeyPathIfKeyPathIsNotAnIntegerOrString($keyPath)
     {
         $arrayIntoArray = array('foo' => array('bar' => 'cheese'));
         $arrayExpected = array('foo' => array('bar' => array('into array')));
         $this->assertEquals($arrayExpected, DotNotation::set($arrayIntoArray, $keyPath, array('into array')));
+    }
+
+    public function testSetInsideEmptyArray()
+    {
+        $nullExpected = array('foo' => array('bar' => 'cheese'));
+        $this->assertEquals($nullExpected, DotNotation::set(array(), 'foo.bar', 'cheese'));
+    }
+
+    /**
+     * @expectedException \Best\DotNotation\InconsistentKeyTypes
+     */
+    public function testSetThrowsInconsistentKeyTypesIfNonArrayKeyIsSet()
+    {
+        $data = array('foo' => array('bar' => true));
+        DotNotation::set($data, 'foo.bar.cheese', 'mozzarella');
+    }
+
+    public function testSetAndOverrideInsideEmptyArray()
+    {
+        $nullExpected = array('foo' => array('bar' => 'cheese'));
+        $this->assertEquals($nullExpected, DotNotation::setAndOverride(array(), 'foo.bar', 'cheese'));
+    }
+
+    public function testSetAndOverrideOverridesNonArrayKeys()
+    {
+        $data = array('foo' => array('bar' => true));
+        $expected = array('foo' => array('bar' => array('cheese' => 'mozzarella')));
+        $this->assertEquals($expected, DotNotation::setAndOverride($data, 'foo.bar.cheese', 'mozzarella'));
     }
 
     /**
