@@ -4,8 +4,6 @@ namespace Best\DotNotation;
 
 final class KeyNotFound extends Exception
 {
-    const DEFAULT_MESSAGE_FORMAT = "Key path '%s' not found";
-
     /**
      * @var string
      */
@@ -30,8 +28,16 @@ final class KeyNotFound extends Exception
      */
     private function defaultMessage()
     {
-        return sprintf(self::DEFAULT_MESSAGE_FORMAT, $this->keyPath);
+        return sprintf("Key path '%s' not found", $this->keyPath);
     }
 
-
+    /**
+     * Get the key path.
+     *
+     * @return string
+     */
+    public function getKeyPath()
+    {
+        return $this->keyPath;
+    }
 }
