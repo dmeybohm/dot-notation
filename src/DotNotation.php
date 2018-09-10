@@ -35,7 +35,7 @@ final class DotNotation
 
             if (array_key_exists($key, $array)) {
                 $nextValue = $array[$key];
-                if (!$keys) {
+                if ($keys === array()) {
                     return $nextValue;
                 }
                 elseif (!is_array($nextValue)) {
@@ -95,7 +95,7 @@ final class DotNotation
 
             if (array_key_exists($key, $ptr)) {
                 $ptr = &$ptr[$key];
-                if (!$keys) {
+                if ($keys === array()) {
                     $ptr = $value;
                     break;
                 }
@@ -137,7 +137,7 @@ final class DotNotation
 
             if (array_key_exists($key, $ptr)) {
                 $ptr = &$ptr[$key];
-                if (!$keys) {
+                if ($keys === array()) {
                     $ptr = $value;
                     break;
                 }
@@ -177,7 +177,7 @@ final class DotNotation
             if (array_key_exists($key, $ptr)) {
                 $prevPtr = &$ptr;
                 $ptr = &$ptr[$key];
-                if (!$keys) {
+                if ($keys === array()) {
                     unset($prevPtr[$key]);
                     return $result;
                 }
