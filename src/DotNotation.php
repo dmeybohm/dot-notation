@@ -185,7 +185,7 @@ final class DotNotation
         $result = array();
 
         foreach ($array as $key => $value) {
-            $references = self::explodeKeys(strval($key));
+            $references = self::explodeKeys((string)$key); // cast for performance
             $value = self::getValue($value);
 
             if (count($references) == 1) {
@@ -460,10 +460,13 @@ final class DotNotation
     private static function explodeKeys($keyPath)
     {
         $keys = explode('.', $keyPath);
-        if (strpos($keyPath, '\\') === false) {
+        if (strpos($keyPath, '\\.') === false) {
             return $keys;
         }
 
+        //
+        // This is the slow path, where the keys contain escaped dots:
+        //
         $joinKeys = array();
         foreach ($keys as $index => $key) {
             if ($key[strlen($key) - 1] === '\\') {
