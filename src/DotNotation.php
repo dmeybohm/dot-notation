@@ -132,10 +132,8 @@ final class DotNotation
         $result = $array;
         $ptr = &$result;
 
-        $parentKeys = array();
         while ($keys) {
             $key = array_shift($keys);
-            $parentKeys[] = $key;
 
             if (array_key_exists($key, $ptr)) {
                 $ptr = &$ptr[$key];
