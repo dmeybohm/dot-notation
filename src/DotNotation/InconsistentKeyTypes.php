@@ -23,6 +23,7 @@ final class InconsistentKeyTypes extends Exception
      * InconsistentKeyTypes constructor.
      *
      * @param mixed $originalValue
+     * @param mixed $newValue
      * @param string $parentKeyPath
      * @param string $message
      */

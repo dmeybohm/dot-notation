@@ -9,6 +9,12 @@ class BadKeyPath extends Exception
      */
     private $keyPath;
 
+    /**
+     * BadKeyPath constructor.
+     *
+     * @param string $keyPath
+     * @param string $message
+     */
     public function __construct($keyPath, $message = "")
     {
         $this->keyPath = $keyPath;
@@ -27,6 +33,8 @@ class BadKeyPath extends Exception
 
     /**
      * Get a default message based on the object's properties.
+     *
+     * @return string
      */
     private function defaultMessage()
     {
