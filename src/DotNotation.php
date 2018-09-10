@@ -15,116 +15,6 @@ final class DotNotation
     }
 
     /**
-     * Convert a dot notation array to a normal PHP array, recursively expanding the dotted keys.
-     *
-     * @param  array $array Array to expand.
-     *
-     * @return array The expanded array.
-     * @throws KeyAlreadyExists
-     */
-    public static function expand(array $array)
-    {
-        $result = array();
-
-        foreach ($array as $key => $value) {
-            $references = self::explodeKeys($key);
-            $value = self::getValue($value);
-
-            if (count($references) == 1) {
-                $key = $references[0];
-
-                // If the result key is already set, we have to merge
-                // the two values.
-                if (isset($result[$key])) {
-                    $result[$key] = self::mergeTwoValues($result[$key], $value, array($key));
-                }
-                else {
-                    $result[$key] = $value;
-                }
-            }
-            else {
-                self::dereferenceDots($result, $references, $value);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Compact an expanded array to a DotNotation array.
-     *
-     * @param array $array The array to compact.
-     *
-     * @return array The compacted array.
-     */
-    public static function compact(array $array)
-    {
-        $result = array();
-
-        foreach ($array as $key => $value) {
-            $escapedKey = self::escapeKey($key);
-
-            if (self::isCompactableArray($value)) {
-                $extraKey = "";
-                reset($value);
-                do {
-                    $moreKey = key($value);
-                    $moreValue = current($value);
-                    $extraKey .= "." . self::escapeKey($moreKey);
-                    $value = $moreValue;
-                }
-                while (self::isCompactableArray($value));
-
-                $result[$escapedKey . $extraKey] = self::compactKeys($value);
-            }
-            else {
-                $result[$escapedKey] = self::compactKeys($value);
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Set the dotted key path in the array.
-     *
-     * @param array $array
-     * @param string $keyPath
-     * @param mixed $value The value to set in the array.
-     * @return array The resulting array with the value set.
-     */
-    public static function set(array $array, $keyPath, $value)
-    {
-        self::checkKeyPath($keyPath);
-        $keys = self::explodeKeys(strval($keyPath));
-        $result = $array;
-        $ptr = &$result;
-
-        $parentKeys = array();
-        while ($keys) {
-            $key = array_shift($keys);
-            $parentKeys[] = $key;
-
-            if (array_key_exists($key, $ptr)) {
-                $ptr = &$ptr[$key];
-                if (!$keys) {
-                    $ptr = $value;
-                    break;
-                }
-                elseif (!is_array($ptr)) {
-                    self::throwKeyAlreadyExists($ptr, $parentKeys);
-                }
-            }
-            else {
-                $ptr[$key] = array();
-                $ptr = &$ptr[$key];
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Get the dotted key path value from the array.
      *
      * @param array $array
@@ -176,6 +66,45 @@ final class DotNotation
         catch (KeyNotFound $e) {
             return $defaultValue;
         }
+    }
+
+    /**
+     * Set the dotted key path in the array.
+     *
+     * @param array $array
+     * @param string $keyPath
+     * @param mixed $value The value to set in the array.
+     * @return array The resulting array with the value set.
+     */
+    public static function set(array $array, $keyPath, $value)
+    {
+        self::checkKeyPath($keyPath);
+        $keys = self::explodeKeys(strval($keyPath));
+        $result = $array;
+        $ptr = &$result;
+
+        $parentKeys = array();
+        while ($keys) {
+            $key = array_shift($keys);
+            $parentKeys[] = $key;
+
+            if (array_key_exists($key, $ptr)) {
+                $ptr = &$ptr[$key];
+                if (!$keys) {
+                    $ptr = $value;
+                    break;
+                }
+                elseif (!is_array($ptr)) {
+                    self::throwKeyAlreadyExists($ptr, $parentKeys);
+                }
+            }
+            else {
+                $ptr[$key] = array();
+                $ptr = &$ptr[$key];
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -236,6 +165,77 @@ final class DotNotation
     }
 
     /**
+     * Convert a dot notation array to a normal PHP array, recursively expanding the dotted keys.
+     *
+     * @param  array $array Array to expand.
+     *
+     * @return array The expanded array.
+     * @throws KeyAlreadyExists
+     */
+    public static function expand(array $array)
+    {
+        $result = array();
+
+        foreach ($array as $key => $value) {
+            $references = self::explodeKeys($key);
+            $value = self::getValue($value);
+
+            if (count($references) == 1) {
+                $key = $references[0];
+
+                // If the result key is already set, we have to merge
+                // the two values.
+                if (isset($result[$key])) {
+                    $result[$key] = self::mergeTwoValues($result[$key], $value, array($key));
+                }
+                else {
+                    $result[$key] = $value;
+                }
+            }
+            else {
+                self::dereferenceDots($result, $references, $value);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Compact an expanded array to a DotNotation array.
+     *
+     * @param array $array The array to compact.
+     *
+     * @return array The compacted array.
+     */
+    public static function compact(array $array)
+    {
+        $result = array();
+
+        foreach ($array as $key => $value) {
+            $escapedKey = self::escapeKey($key);
+
+            if (self::isCompactableArray($value)) {
+                $extraKey = "";
+                do {
+                    $firstValue = reset($value);
+                    $firstKey = key($value);
+
+                    $extraKey .= "." . self::escapeKey($firstKey);
+                    $value = $firstValue;
+                }
+                while (self::isCompactableArray($value));
+
+                $result[$escapedKey . $extraKey] = self::compactKeys($value);
+            }
+            else {
+                $result[$escapedKey] = self::compactKeys($value);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Escape keys.
      *
      * @param string $key The key to escape.
@@ -274,7 +274,7 @@ final class DotNotation
      * @return void
      * @throws DotNotation\KeyAlreadyExists
      */
-    private static function dereferenceDots(array &$result, array $references, $values)
+    private static function dereferenceDots(&$result, $references, $values)
     {
         $top = array_shift($references);
 
@@ -339,11 +339,8 @@ final class DotNotation
      *
      * @return array The merged array.
      */
-    private static function mergeArraysRecursively(
-        array $firstArray,
-        array $secondArray,
-        array $parentKeys
-    ) {
+    private static function mergeArraysRecursively($firstArray, $secondArray, $parentKeys)
+    {
         $result = $firstArray;
 
         foreach ($secondArray as $key => $value) {
@@ -374,7 +371,7 @@ final class DotNotation
      *         array, or if an array is changed to a string.
      * @return array The merged values as an array, or the second value if both are scalars.
      */
-    private static function mergeTwoValues($valueOne, $valueTwo, array $parentKeys)
+    private static function mergeTwoValues($valueOne, $valueTwo, $parentKeys)
     {
         $oneIsArray = is_array($valueOne);
         $twoIsArray = is_array($valueTwo);
@@ -460,7 +457,7 @@ final class DotNotation
 
         $joinKeys = array();
         foreach ($keys as $index => $key) {
-            if (($key[strlen($key) - 1] === '\\')) {
+            if ($key[strlen($key) - 1] === '\\') {
                 $joinKeys[$index + 1] = true;
             }
         }
@@ -469,8 +466,7 @@ final class DotNotation
         $next = 0;
         foreach ($keys as $index => $key) {
             if (array_key_exists($index, $joinKeys)) {
-                $chopped = rtrim($result[$next - 1], "\\");
-                $result[$next - 1] = $chopped . '.' . $key;
+                $result[$next - 1] = sprintf("%s.%s", substr($result[$next - 1], 0,  -1), $key);
             }
             else {
                 $result[$next] = $key;

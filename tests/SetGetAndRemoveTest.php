@@ -109,7 +109,7 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
     public function testRemoveThrowsKeyNotFoundIfKeyDoesNotExist()
     {
         $array = array('foo' => array('array' => array('something else' => 'into another')));
-        DotNotation::removeIfExists($array, 'undefined');
+        DotNotation::remove($array, 'undefined');
     }
 
     public function testRemoveIfExistsDoesNotThrowIfKeyDoesNotExist()
@@ -126,6 +126,4 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
             'bool' => array(true),
         );
     }
-
-
 }
