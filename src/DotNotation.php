@@ -100,7 +100,7 @@ final class DotNotation
                     break;
                 }
                 elseif (!is_array($ptr)) {
-                    self::throwInconsistentKeyTypes($ptr, $parentKeys);
+                    self::throwInconsistentKeyTypes($ptr, array(), $parentKeys);
                 }
             }
             else {
@@ -428,7 +428,7 @@ final class DotNotation
             $result = $newValue;
         }
         else {
-            self::throwInconsistentKeyTypes($originalValue, $parentKeys);
+            self::throwInconsistentKeyTypes($originalValue, $newValue, $parentKeys);
         }
 
         return $result;
@@ -437,16 +437,16 @@ final class DotNotation
     /**
      * Handle changing a key to an array or vice-versa.
      *
-     * @param  mixed $originalValue First value.
-     * @param  array $parentKeys Key path to parents used for error reporting.
+     * @param mixed $originalValue First value.
+     * @param mixed $newValue
+     * @param array $parentKeys Key path to parents used for error reporting.
      *
      * @return void
-     * @throws InconsistentKeyTypes
      */
-    private static function throwInconsistentKeyTypes($originalValue, array $parentKeys)
+    private static function throwInconsistentKeyTypes($originalValue, $newValue, array $parentKeys)
     {
         $parentKeyPath = implode('.', $parentKeys);
-        throw new InconsistentKeyTypes($originalValue, $parentKeyPath);
+        throw new InconsistentKeyTypes($originalValue, $newValue, $parentKeyPath);
     }
 
     /**

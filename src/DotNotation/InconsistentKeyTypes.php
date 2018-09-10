@@ -10,20 +10,26 @@ final class InconsistentKeyTypes extends Exception
     private $originalValue;
 
     /**
+     * @var mixed
+     */
+    private $newValue;
+
+    /**
      * @var string
      */
     private $parentKeyPath;
 
     /**
-     * KeyAlreadyExists constructor.
+     * InconsistentKeyTypes constructor.
      *
      * @param mixed $originalValue
      * @param string $parentKeyPath
      * @param string $message
      */
-    public function __construct($originalValue, $parentKeyPath, $message = "")
+    public function __construct($originalValue, $newValue, $parentKeyPath, $message = "")
     {
         $this->originalValue = $originalValue;
+        $this->newValue = $newValue;
         $this->parentKeyPath = $parentKeyPath;
         parent::__construct($message ?: $this->defaultMessage());
     }
@@ -36,6 +42,16 @@ final class InconsistentKeyTypes extends Exception
     public function getOriginalValue()
     {
         return $this->originalValue;
+    }
+
+    /**
+     * Get the new value.
+     *
+     * @return mixed
+     */
+    public function getNewValue()
+    {
+        return $this->newValue;
     }
 
     /**
