@@ -30,22 +30,23 @@ final class DotNotation
         self::checkKeyPath($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
 
-        while ($keys) {
+        $nextValue = null;
+        while ($keys !== array()) {
             $key = array_shift($keys);
 
-            if (array_key_exists($key, $array)) {
-                $nextValue = $array[$key];
-                if ($keys === array()) {
-                    return $nextValue;
-                }
-                elseif (!is_array($nextValue)) {
-                    break;
-                }
-                $array = $nextValue;
-            }
-            else {
+            if (!array_key_exists($key, $array)) {
+                array_push($keys, $key);
                 break;
             }
+            $nextValue = $array[$key];
+            if (!is_array($nextValue)) {
+                break;
+            }
+            $array = $nextValue;
+        }
+
+        if ($keys === array()) {
+            return $nextValue;
         }
 
         throw new KeyNotFound($keyPath);
@@ -60,7 +61,7 @@ final class DotNotation
      *
      * @return mixed The returned value, or the default value if no value is found.
      */
-    public static function getOrDefault(array $array, $keyPath, $defaultValue = null)
+    public static function getOrDefault(array $array, $keyPath, $defaultValue)
     {
         try {
             return self::get($array, $keyPath);
@@ -68,6 +69,46 @@ final class DotNotation
         catch (KeyNotFound $e) {
             return $defaultValue;
         }
+    }
+
+    /**
+     * Get the dotted key path value from the array. Return null if the value is not found.
+     *
+     * @param array $array
+     * @param string $keyPath
+     * @return mixed
+     */
+    public static function getOrNull(array $array, $keyPath)
+    {
+        return self::getOrDefault($array, $keyPath, null);
+    }
+
+    /**
+     * Whether the array has the key.
+     *
+     * @param array $array
+     * @param string $keyPath
+     * @return bool
+     */
+    public static function has(array $array, $keyPath)
+    {
+        self::checkKeyPath($keyPath);
+        $keys = self::explodeKeys(strval($keyPath));
+
+        while ($keys !== array()) {
+            $key = array_shift($keys);
+
+            if (!array_key_exists($key, $array)) {
+                array_push($keys, $key);
+                break;
+            }
+            $array = $array[$key];
+            if (!is_array($array)) {
+                break;
+            }
+        }
+
+        return $keys === array();
     }
 
     /**
@@ -89,23 +130,22 @@ final class DotNotation
         $ptr = &$result;
 
         $parentKeys = array();
-        while ($keys) {
+        while ($keys !== array()) {
             $key = array_shift($keys);
             $parentKeys[] = $key;
 
-            if (array_key_exists($key, $ptr)) {
-                $ptr = &$ptr[$key];
-                if ($keys === array()) {
-                    $ptr = $value;
-                    break;
-                }
-                elseif (!is_array($ptr)) {
-                    throw new InconsistentKeyTypes($ptr, array(), implode('.', $parentKeys));
-                }
-            }
-            else {
+            if (!array_key_exists($key, $ptr)) {
                 $ptr[$key] = $keys === array() ? $value : array();
                 $ptr = &$ptr[$key];
+                continue;
+            }
+            $ptr = &$ptr[$key];
+            if ($keys === array()) {
+                $ptr = $value;
+                break;
+            }
+            elseif (!is_array($ptr)) {
+                throw new InconsistentKeyTypes($ptr, array(), implode('.', $parentKeys));
             }
         }
 
@@ -132,22 +172,21 @@ final class DotNotation
         $result = $array;
         $ptr = &$result;
 
-        while ($keys) {
+        while ($keys !== array()) {
             $key = array_shift($keys);
 
-            if (array_key_exists($key, $ptr)) {
-                $ptr = &$ptr[$key];
-                if ($keys === array()) {
-                    $ptr = $value;
-                    break;
-                }
-                elseif (!is_array($ptr)) {
-                    $ptr = array();
-                }
-            }
-            else {
+            if (!array_key_exists($key, $ptr)) {
                 $ptr[$key] = $keys === array() ? $value : array();
                 $ptr = &$ptr[$key];
+                continue;
+            }
+            $ptr = &$ptr[$key];
+            if ($keys === array()) {
+                $ptr = $value;
+                break;
+            }
+            elseif (!is_array($ptr)) {
+                $ptr = array();
             }
         }
 
@@ -171,23 +210,22 @@ final class DotNotation
         $result = $array;
         $ptr = &$result;
 
-        while ($keys) {
+        while ($keys !== array()) {
             $key = array_shift($keys);
 
-            if (array_key_exists($key, $ptr)) {
-                $prevPtr = &$ptr;
-                $ptr = &$ptr[$key];
-                if ($keys === array()) {
-                    unset($prevPtr[$key]);
-                    return $result;
-                }
-                elseif (!is_array($ptr)) {
-                    throw new KeyNotFound($keyPath);
-                }
-            }
-            else {
+            if (!array_key_exists($key, $ptr)) {
                 $ptr[$key] = array();
                 $ptr = &$ptr[$key];
+                continue;
+            }
+            $prevPtr = &$ptr;
+            $ptr = &$ptr[$key];
+            if ($keys === array()) {
+                unset($prevPtr[$key]);
+                return $result;
+            }
+            elseif (!is_array($ptr)) {
+                throw new KeyNotFound($keyPath);
             }
         }
 
@@ -467,6 +505,9 @@ final class DotNotation
         if (!is_string($keyPath) && !is_int($keyPath)) {
             throw new BadKeyPath($keyPath);
         }
+        if (strlen(strval($keyPath)) === 0) {
+            throw new BadKeyPath($keyPath);
+        }
     }
 
     /**
@@ -499,34 +540,37 @@ final class DotNotation
      *
      * @param string $keyPath
      * @return array
+     * @throws BadKeyPath
      */
     private static function explodeKeys($keyPath)
     {
         $keys = explode('.', $keyPath);
         if (strpos($keyPath, '\\.') === false) {
-            return $keys;
+            return array_filter($keys, function($elem) { return $elem !== ''; });
         }
 
         //
         // This is the slow path, where the keys contain escaped dots:
         //
-        $joinKeys = array();
-        foreach ($keys as $index => $key) {
-            if ($key[strlen($key) - 1] === '\\') {
-                $joinKeys[$index + 1] = true;
-            }
-        }
-
+        $joinNext = false;
         $result = array();
         $next = 0;
         foreach ($keys as $index => $key) {
-            if (array_key_exists($index, $joinKeys)) {
+            $len = strlen($key);
+            if ($len === 0) {
+                continue;
+            }
+            $endsWithBackslash = $key[$len - 1] === '\\';
+            if ($joinNext) {
                 $result[$next - 1] = sprintf("%s.%s", substr($result[$next - 1], 0, -1), $key);
+                $joinNext = $endsWithBackslash;
+                continue;
             }
-            else {
-                $result[$next] = $key;
-                $next += 1;
+            elseif ($endsWithBackslash) {
+                $joinNext = true;
             }
+            $result[$next] = $key;
+            $next += 1;
         }
 
         return $result;

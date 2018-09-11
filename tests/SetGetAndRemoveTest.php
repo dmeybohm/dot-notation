@@ -69,7 +69,7 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetOrDefaultImitatesGet($data, $keyPath, $expected)
     {
-        $this->assertEquals($expected, DotNotation::getOrDefault($data, $keyPath));
+        $this->assertEquals($expected, DotNotation::getOrDefault($data, $keyPath, null));
     }
 
     /**
@@ -77,7 +77,7 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetOrDefault($data, $keyPath, $expected)
     {
-        $this->assertEquals($expected, DotNotation::getOrDefault($data, $keyPath));
+        $this->assertEquals($expected, DotNotation::getOrDefault($data, $keyPath, 'default'));
     }
 
     public function provideGetOrDefault()
@@ -86,12 +86,12 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
             'second level key' => array(
                 'data' => array('foo' => array('baz' => 'cheese')),
                 'keyPath' => 'foo.undefined',
-                'expected' => null
+                'expected' => 'default'
             ),
             'first level key' => array(
                 'data' => array('foo' => array('baz' => 'cheese')),
                 'keyPath' => 'bar',
-                'expected' => null
+                'expected' => 'default'
             ),
             'get value' => array(
                 'data' => array('foo' => array('baz' => 'cheese')),
@@ -99,6 +99,15 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
                 'expected' => 'cheese'
             ),
         );
+    }
+
+    /**
+     * @dataProvider provideGetOrDefault
+     */
+    public function testGetOrNull($data, $keyPath, $expected)
+    {
+        $expected = $expected === 'default' ? null : $expected;
+        $this->assertEquals($expected, DotNotation::getOrNull($data, $keyPath));
     }
 
     /**
@@ -245,7 +254,7 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
     /**
      * @expectedException \Best\DotNotation\KeyNotFound
      */
-    public function testRemoveThrowsKeyNotFoundIfValueIsAttemptedToBeRemoved()
+    public function testRemoveThrowsKeyNotFoundIfMissingValueIsAttemptedToBeRemoved()
     {
         $array = array('foo' => array('array' => array('something else' => 'into another')));
         DotNotation::remove($array, 'foo.array.0.something else');
