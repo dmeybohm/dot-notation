@@ -26,15 +26,16 @@ For example, to access the key `'child'` of the array key `'parent'` on the vari
 ```php
 $container = array('parent' => array('child' => '2')); 
 $childElement = \Best\DotNotation::get($container, 'parent.child');
-// $childElemetn === '2' here
+// $childElement === '2' here
 
 ```
 You can also used numbers as keys. For example, to access the second array element in the key `'parent'` of the variable
-`$container`, you would do:
+`$container`, you would do this: (Note these are zero-indexed just like normal PHP arrays, so to 
+get the second element, you specify .1 as the key):
 
 ```php
-$container = array('parent' => array('child1', 'child2'));
-$secondElement = \Best\DotNotation::get($container, 'parent.2');
+$container = array('parent' => array('child0', 'child1'));
+$secondElement = \Best\DotNotation::get($container, 'parent.1');
 // $secondElement === 'child2' here.
 ```
 
