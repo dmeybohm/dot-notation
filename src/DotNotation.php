@@ -27,7 +27,7 @@ final class DotNotation
      */
     public static function get(array $array, $keyPath)
     {
-        self::checkKeyPath($keyPath);
+        self::checkKeyPathIsValidAndNonEmpty($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
 
         $nextValue = null;
@@ -35,8 +35,7 @@ final class DotNotation
             $key = array_shift($keys);
 
             if (!array_key_exists($key, $array)) {
-                array_push($keys, $key);
-                break;
+                throw new KeyNotFound($keyPath);
             }
             $nextValue = $array[$key];
             if (!is_array($nextValue)) {
@@ -92,15 +91,14 @@ final class DotNotation
      */
     public static function has(array $array, $keyPath)
     {
-        self::checkKeyPath($keyPath);
+        self::checkKeyPathIsValidAndNonEmpty($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
 
         while ($keys !== array()) {
             $key = array_shift($keys);
 
             if (!array_key_exists($key, $array)) {
-                array_push($keys, $key);
-                break;
+                return false;
             }
             $array = $array[$key];
             if (!is_array($array)) {
@@ -124,7 +122,7 @@ final class DotNotation
      */
     public static function set(array $array, $keyPath, $value)
     {
-        self::checkKeyPath($keyPath);
+        self::checkKeyPathIsValidAndNonEmpty($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
         $result = $array;
         $ptr = &$result;
@@ -167,7 +165,7 @@ final class DotNotation
      */
     public static function setAndOverride(array $array, $keyPath, $value)
     {
-        self::checkKeyPath($keyPath);
+        self::checkKeyPathIsValidAndNonEmpty($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
         $result = $array;
         $ptr = &$result;
@@ -205,7 +203,7 @@ final class DotNotation
      */
     public static function remove(array $array, $keyPath)
     {
-        self::checkKeyPath($keyPath);
+        self::checkKeyPathIsValidAndNonEmpty($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
         $result = $array;
         $ptr = &$result;
@@ -500,7 +498,7 @@ final class DotNotation
      * @return void
      * @throws BadKeyPath
      */
-    private static function checkKeyPath($keyPath)
+    private static function checkKeyPathIsValidAndNonEmpty($keyPath)
     {
         if (!is_string($keyPath) && !is_int($keyPath)) {
             throw new BadKeyPath($keyPath);
