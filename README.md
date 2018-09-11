@@ -50,10 +50,11 @@ Furthermore you can combine integer and string keys arbitrarily
 as well:
 
 ```php
-$container = array('parent0', 'parent1' => array('child1' => array('grandchild1' => 'greatgrandchild'))));
-$greatGrandChild = \Best\DotNotation::get($container, '1.child1.grandchild1')
-// $greatGrandChild === 'greatgrandchild' here.
+$container = array('parent0', array('child' => array('grandChild' => 'greatGrandChild'))));
+$greatGrandChild = \Best\DotNotation::get($container, '1.child.grandChild')
+// $greatGrandChild === 'greatGrandChild' here.
 ```
+
 ### Escaping dot to include it in keys
 
 If you want to include a literal dot inside a key name, you can escape it with a backslash.
