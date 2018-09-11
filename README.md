@@ -14,11 +14,10 @@ composer require best/dot-notation
 
 This package has a single class with static methods, `\Best\DotNotation`.
 
-Each method takes an array as its first argument, and then a "key path" as its
-second argument. 
+These methods all take an array as their first argument, and most then a "key path" as their
+second argument, that determines which keys on the array to operate on.
 
-The key path can include dots to indicate subkeys of arrays to access or to denote
-arrays in a more compact form.
+The key path can include dots to indicate subkeys of arrays to access.
 
 For example, to access the key `'child'` of the array key `'parent'` on the variable 
 `$container`, you would do:
@@ -29,16 +28,32 @@ $childElement = \Best\DotNotation::get($container, 'parent.child');
 // $childElement === '2' here
 
 ```
-You can also used numbers as keys. For example, to access the second array element in the key `'parent'` of the variable
+You can also use numbers as keys. For example, to access the second array element in the key `'parent'` of the variable
 `$container`, you would do this: (Note these are zero-indexed just like normal PHP arrays, so to 
 get the second element, you specify .1 as the key):
 
 ```php
 $container = array('parent' => array('child0', 'child1'));
 $secondElement = \Best\DotNotation::get($container, 'parent.1');
-// $secondElement === 'child2' here.
+// $secondElement === 'child1' here.
 ```
 
+You can also use bare integers:
+
+```php
+$container = array('parent0', 'parent1', 'parent2');
+$thirdElement = \Best\DotNotation::get($container, 2);
+// $thirdElement === 'parent2' here.
+```
+
+Furthermore you can combine integer and string keys arbitrarily 
+as well:
+
+```php
+$container = array('parent0', 'parent1' => array('child1' => array('grandchild1' => 'greatgrandchild'))));
+$greatGrandChild = \Best\DotNotation::get($container, '1.child1.grandchild1')
+// $greatGrandChild === 'greatgrandchild' here.
+```
 ### Escaping dot to include it in keys
 
 If you want to include a literal dot inside a key name, you can escape it with a backslash.
@@ -146,6 +161,17 @@ so that the array will be as flat as possible.
 
 For example,
 
+```php
+$array = \Best\DotNotation::compact(array(
+  'my' => array(
+      'dotted' ==> array(
+          'key' => 'value'
+      )
+  )
+));
+// returns the dotted array:
+array('my.dotted.key' => 'value');
+```
 
 [1]: http://docs.mongodb.org/manual/core/document/#dot-notation
 [2]: http://framework.zend.com/
