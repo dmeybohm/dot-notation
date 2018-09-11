@@ -505,7 +505,7 @@ final class DotNotation
         if (!is_string($keyPath) && !is_int($keyPath)) {
             throw new BadKeyPath($keyPath);
         }
-        if (strlen($keyPath) === 0) {
+        if (strlen(strval($keyPath)) === 0) {
             throw new BadKeyPath($keyPath);
         }
     }
