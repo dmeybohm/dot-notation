@@ -22,6 +22,7 @@ arrays in a more compact form.
 
 For example, to access the key `'child'` of the array key `'parent'` on the variable 
 `$container`, you would do:
+
 ```php
 $container = array('parent' => array('child' => '2')); 
 $childElement = \Best\DotNotation::get($container, 'parent.child');
@@ -143,99 +144,6 @@ Compact the array as in `compact()`, but also compact integer keys,
 so that the array will be as flat as possible.
 
 For example,
-
-## Usage
-
-If you have your autoloader configured, you can just use the class.  The
-interface consists of two static methods: `expand()` and `compact()`. The
-`expand()` method transforms the dotted notation to the equivalent expanded
-array, and `compact()` does the inverse.
-
-```php
-<?php
-use Best\DotNotation;
-
-$array = DotNotation::expand(array('my.dotted.key' => 'value'));
-// returns an array that looks like:
-array(
-     'my' => array(
-         'dotted' => array(
-             'key' => 'value'
-         )
-     )
-);
-```
-
-### Compact does the reverse operation
-
-Call the `compact()` method when you have a regular php array and
-you want to create a DotNotation array:
-
-```php
-use Best\DotNotation;
-
-$array = DotNotation::compact(array(
-  'my' => array(
-      'dotted' ==> array(
-          'key' => 'value'
-      )
-  )
-));
-// returns the dotted array:
-array('my.dotted.key' => 'value');
-```
-
-### Keys can be appended to...
-
-Dotted keys can be specified many times in the same array, and all the values will be 
-appended as long as all of the parent keys are arrays.
-
-```php
-$array = DotNotation::expand(array(
-    'my.dotted.key' => 'value1',
-    'my.dotted.other.key' => 'value2',
-));
-// expands to:
-array(
-    'my' => array(
-        'dotted' => array(
-            'key'   => 'value1',
-            'other' => array(
-                'key' => 'value2'
-            )
-        )
-    )
-);
-```
-
-### ...but overriding keys throws an exception.
-
-Switching from a non-array type to an array or vice-versa inside a
-dotted key throws an exception.
-
-```php
-// this throws an exception of \Best\DotNotation\InconsistentKeyTypes
-$array = DotNotation::expand(array(
-    'my.dotted.key' => 'value1',
-    'my.dotted.key.subkey' => 'value2'
-));
-```
-
-This should catch some mistakes when using the dot notation. 
-
-### Note that PHP will override keys with the same value!
-
-Note that PHP itself will happily override keys in the same array. So, the
-following will not throw an error, but silently override the first key:
-
-```php
-$array = DotNotation::expand(array(
-    'controllers.invokables' => array('Book\Controller\Book'),
-    'controllers.invokables' => array('Album\Controller\Album'),
-));
-// expands to:
-array('controllers' => array('invokables' => array('Album\Controller\Album')));
-```
 
 
 [1]: http://docs.mongodb.org/manual/core/document/#dot-notation
