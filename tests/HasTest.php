@@ -43,6 +43,21 @@ class HasTest extends TestCase
                 'keyPath' => 'foo.baz.1',
                 'expected' => true
             ),
+            'null returns true' => array(
+                'data' => array('foo' => array('baz' => array(null, 'mozzarella'))),
+                'keyPath' => 'foo.baz.0',
+                'expected' => true
+            ),
+            'outside array returns false' => array(
+                'data' => array('foo' => array('baz' => array(null, 'mozzarella'))),
+                'keyPath' => 'foo.baz.2',
+                'expected' => false
+            ),
+            'undefined key returns false' => array(
+                'data' => array('foo' => array('baz' => array(null, 'mozzarella'))),
+                'keyPath' => 'undefined.key.altogether',
+                'expected' => false
+            ),
         );
     }
 }
