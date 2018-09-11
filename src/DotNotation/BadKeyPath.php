@@ -12,7 +12,7 @@ class BadKeyPath extends Exception
     /**
      * BadKeyPath constructor.
      *
-     * @param string $keyPath
+     * @param mixed $keyPath
      * @param string $message
      */
     public function __construct($keyPath, $message = "")

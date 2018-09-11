@@ -75,7 +75,7 @@ final class DotNotation
      * Get the dotted key path value from the array. Return null if the value is not found.
      *
      * @param array $array
-     * @param $keyPath
+     * @param string $keyPath
      * @return mixed
      */
     public static function getOrNull(array $array, $keyPath)
