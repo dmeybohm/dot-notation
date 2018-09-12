@@ -115,7 +115,8 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testSet($data, $keyPath, $value, $expected)
     {
-        $this->assertEquals($expected, DotNotation::set($data, $keyPath, $value));
+        DotNotation::set($data, $keyPath, $value);
+        $this->assertEquals($expected, $data);
     }
 
     public function provideSet()
@@ -161,8 +162,7 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
     public function testSetThrowsBadKeyPathIfKeyPathIsNotAnIntegerOrString($keyPath)
     {
         $arrayIntoArray = array('foo' => array('bar' => 'cheese'));
-        $arrayExpected = array('foo' => array('bar' => array('into array')));
-        $this->assertEquals($arrayExpected, DotNotation::set($arrayIntoArray, $keyPath, array('into array')));
+        DotNotation::set($arrayIntoArray, $keyPath, array('into array'));
     }
 
     /**
@@ -188,7 +188,8 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetAndOverridePassesSetTest($data, $keyPath, $value, $expected)
     {
-        $this->assertEquals($expected, DotNotation::setAndOverride($data, $keyPath, $value));
+        DotNotation::setAndOverride($data, $keyPath, $value);
+        $this->assertEquals($expected, $data);
     }
 
     /**
@@ -196,7 +197,8 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testSetAndOverride($data, $keyPath, $value, $expected)
     {
-        $this->assertEquals($expected, DotNotation::setAndOverride($data, $keyPath, $value));
+        DotNotation::setAndOverride($data, $keyPath, $value);
+        $this->assertEquals($expected, $data);
     }
 
     public function provideSetAndOverride()
@@ -222,7 +224,8 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testRemove($data, $keyPath, $expected)
     {
-        $this->assertEquals($expected, DotNotation::remove($data, $keyPath));
+        DotNotation::remove($data, $keyPath);
+        $this->assertEquals($expected, $data);
     }
 
     public function provideRemove()
@@ -274,7 +277,8 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testRemoveIfExistsImitatesRemove($data, $keyPath, $expected)
     {
-        $this->assertEquals($expected, DotNotation::removeIfExists($data, $keyPath));
+        DotNotation::removeIfExists($data, $keyPath);
+        $this->assertEquals($expected, $data);
     }
 
     /**
@@ -282,7 +286,8 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
      */
     public function testRemoveIfExists($data, $keyPath, $expected)
     {
-        $this->assertEquals($expected, DotNotation::removeIfExists($data, $keyPath));
+        DotNotation::removeIfExists($data, $keyPath);
+        $this->assertEquals($expected, $data);
     }
 
     public function provideRemoveIfExists()

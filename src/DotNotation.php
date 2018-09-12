@@ -116,11 +116,11 @@ final class DotNotation
      * @param string $keyPath
      * @param mixed $value The value to set in the array.
      *
-     * @return array The resulting array with the value set.
+     * @return void
      * @throws BadKeyPath
      * @throws InconsistentKeyTypes
      */
-    public static function set(array $array, $keyPath, $value)
+    public static function set(array &$array, $keyPath, $value)
     {
         self::checkKeyPathIsValidAndNonEmpty($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
@@ -147,7 +147,7 @@ final class DotNotation
             }
         }
 
-        return $result;
+        $array = $result;
     }
 
     /**
@@ -160,10 +160,10 @@ final class DotNotation
      * @param string $keyPath
      * @param mixed $value The value to set in the array.
      *
-     * @return array The resulting array with the value set.
+     * @return void
      * @throws BadKeyPath
      */
-    public static function setAndOverride(array $array, $keyPath, $value)
+    public static function setAndOverride(array &$array, $keyPath, $value)
     {
         self::checkKeyPathIsValidAndNonEmpty($keyPath);
         $keys = self::explodeKeys(strval($keyPath));
@@ -188,7 +188,7 @@ final class DotNotation
             }
         }
 
-        return $result;
+        $array = $result;
     }
 
     /**
@@ -196,16 +196,16 @@ final class DotNotation
      *
      * @param array $array
      * @param string $keyPath
-     * @return array The array with the value unset.
+     * @return void
      *
      * @throws KeyNotFound
      * @throws BadKeyPath
      */
-    public static function remove(array $array, $keyPath)
+    public static function remove(array &$array, $keyPath)
     {
         self::checkKeyPathIsValidAndNonEmpty($keyPath);
-        $keys = self::explodeKeys(strval($keyPath));
         $result = $array;
+        $keys = self::explodeKeys(strval($keyPath));
         $ptr = &$result;
 
         while ($keys !== array()) {
@@ -220,7 +220,8 @@ final class DotNotation
             $ptr = &$ptr[$key];
             if ($keys === array()) {
                 unset($prevPtr[$key]);
-                return $result;
+                $array = $result;
+                return;
             }
             elseif (!is_array($ptr)) {
                 throw new KeyNotFound($keyPath);
@@ -238,15 +239,16 @@ final class DotNotation
      * @param array $array
      * @param string $keyPath
      *
-     * @return array The array with the value unset, or the original array if the key does not exist.
+     * @return bool Whether the key was removed.
      */
-    public static function removeIfExists(array $array, $keyPath)
+    public static function removeIfExists(array &$array, $keyPath)
     {
         try {
-            return self::remove($array, $keyPath);
+            self::remove($array, $keyPath);
+            return true;
         }
         catch (KeyNotFound $e) {
-            return $array;
+            return false;
         }
     }
 
