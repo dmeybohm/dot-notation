@@ -194,7 +194,7 @@ final class DotNotation
     /**
      * Remove a value from a key path in an array and return the array.
      *
-     * @param array|\ArrayAccess &$array
+     * @param array &$array
      * @param string $keyPath
      * @return void
      *
