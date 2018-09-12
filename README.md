@@ -50,10 +50,11 @@ Furthermore you can combine integer and string keys arbitrarily
 as well:
 
 ```php
-$container = array('parent0', 'parent1' => array('child1' => array('grandchild1' => 'greatgrandchild'))));
-$greatGrandChild = \Best\DotNotation::get($container, '1.child1.grandchild1')
-// $greatGrandChild === 'greatgrandchild' here.
+$container = array('parent0', array('child' => array('grandChild' => 'greatGrandChild'))));
+$greatGrandChild = \Best\DotNotation::get($container, '1.child.grandChild')
+// $greatGrandChild === 'greatGrandChild' here.
 ```
+
 ### Escaping dot to include it in keys
 
 If you want to include a literal dot inside a key name, you can escape it with a backslash.
@@ -74,58 +75,97 @@ Most of these methods require a valid key path. A valid key path is
 either an integer or non-empty string. Passing an invalid key path will
 result in a `\Best\DotNotation\BadKeyPath` exception.
 
-### `get(array $array, string|int $keyPath): mixed`
+### Get Methods
+
+#### `get(array $array, string|int $keyPath): mixed`
 
 Get the value stored at the key path.
 
 If any of the keys do not exist in the key path, this will 
 throw a `\Best\DotNotation\KeyNotFound` exception.
 
-### `getOrNull(array $array, string|int $keyPath): mixed`
+#### `getOrNull(array $array, string|int $keyPath): mixed`
 
 Get the value stored at the key path.
 
 If any of the keys do not exist in the key path, this will
 return null.
 
-### `getOrDefault(array $array, string|int $keyPath, mixed $defaultValue): mixed`
+#### `getOrDefault(array $array, string|int $keyPath, mixed $defaultValue): mixed`
 
 Get the value stored at the key path.
 
 If any of the keys do not exist in the key path, this will
 return the default value from the third argument.
 
-### `has(array $array, string|int $keyPath): bool`
+#### `has(array $array, string|int $keyPath): bool`
 
 Whether the array has a value at the key path.
 
 Note that even if this value is `null`, this will still
 return `true`.
 
-### `set(): array`
+```php
+use Best\DotNotation;
+
+$container = ['movies' => [ 
+    [
+        'title' => 'Batman V. Superman - Dawn of Justice',
+        'director' => 'Zack Snyder'
+        'lead actor' => 'Henry Cavill'
+    ],          
+    [
+        'title' => 'La La Land',
+        'director' => 'Damian Chazelle'
+    ],
+    [
+        'title' => 'Justice League',
+    ],          
+];
+
+$zackSnyder = DotNotation::get($container, 'movies.0.director');
+// $zackSnyder === 'Zack Snyder'
+
+$null = DotNotation::getOrNull($container, 'movies.1.lead actor');
+// $null === null
+
+$jossWhedon = DotNotation::getOrDefault($container, 'movies.2.director', 'Joss Whedon');
+// $jossWhedon === 'Joss Whedon'
+
+$hasDirector = DotNotation::has($container, 'movies.2.director');
+// $hasDirector === false
+```
+
+### Set Methods
+
+#### `set(): array`
 
 Set the value 
 
-### `setAndOverride(array $array, string|int $keyPath): array`
+#### `setAndOverride(array $array, string|int $keyPath): array`
 
 Set the path, and ignore any invalid intermediate keys, setting them to empty
 arrays along the way.
 
 The new array with the key set is returned.
  
-### `remove()`
+### Remove Methods
+
+#### `remove()`
 
 Remove the value from the key path if it exists. A `\Best\DotNotation\KeyNotFound` exception is thrown
 if any of the keys in the key path do not exist.
 
-### `removeIfExists(array $array, string|int $keyPath)`
+#### `removeIfExists(array $array, string|int $keyPath)`
 
 Remove the value from the key path if it exists. No exception is thrown
 if the key path does not exist. 
 
 The new array with the key removed is returned.
 
-### `expand(array $dottedArray): array`
+### Recursive Methods 
+
+#### `expand(array $dottedArray): array`
 
 Recursively expand the dots inside the keys into new arrays. Returns the newly expanded array.
 
@@ -133,7 +173,7 @@ If any inconsistent keys are detected (some keys are defined as scalars in some 
 arrays in other keys), a `\Best\DotNotation\InconsistentKeyTypes`
 exception will be thrown.
 
-### `compact(array $array): array`
+#### `compact(array $array): array`
 
 Compact the array into a dotted array, with keys, suitable for passing
 to `expand()`.
@@ -154,7 +194,7 @@ $array = DotNotation::compact(array(
 array('my.dotted.key' => 'value');
 ```
 
-### `compactWithIntegerKeys(array $array): array`
+#### `compactWithIntegerKeys(array $array): array`
 
 Compact the array as in `compact()`, but also compact integer keys,
 so that the array will be as flat as possible.
