@@ -14,7 +14,7 @@ class ExplodeKeysTest extends \PHPUnit\Framework\TestCase
      */
     private $method;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

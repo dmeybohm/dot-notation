@@ -180,11 +180,11 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
     /**
      * Tests that overriding non-array keys throws an exception.
      *
-     * @expectedException \Best\DotNotation\InconsistentKeyTypes
      * @return void
      */
     public function testOverridingNonArrayKeysThrowsAnException()
     {
+        $this->expectException(\Best\DotNotation\InconsistentKeyTypes::class);
         DotNotation::expand(array(
             'my.dotted.key' => 'value1',
             'my.dotted.key.other' => 'value2'
@@ -208,8 +208,8 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
         }
         catch (InconsistentKeyTypes $exception) {
             $caught = true;
-            $this->assertContains('my.dotted.key', $exception->getMessage());
-            $this->assertContains('from an array', $exception->getMessage());
+            $this->assertStringContainsString('my.dotted.key', $exception->getMessage());
+            $this->assertStringContainsString('from an array', $exception->getMessage());
         }
         $this->assertTrue($caught, 'Exception was not thrown!');
     }
@@ -230,8 +230,8 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
         }
         catch (InconsistentKeyTypes $exception) {
             $caught = true;
-            $this->assertContains('my.dotted.key', $exception->getMessage());
-            $this->assertContains('from a non-array', $exception->getMessage());
+            $this->assertStringContainsString('my.dotted.key', $exception->getMessage());
+            $this->assertStringContainsString('from a non-array', $exception->getMessage());
         }
         $this->assertTrue($caught, 'Exception was not thrown!');
     }
@@ -252,8 +252,8 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
         }
         catch (InconsistentKeyTypes $exception) {
             $caught = true;
-            $this->assertContains('scheduler', $exception->getMessage());
-            $this->assertContains('from an array', $exception->getMessage());
+            $this->assertStringContainsString('scheduler', $exception->getMessage());
+            $this->assertStringContainsString('from an array', $exception->getMessage());
         }
         $this->assertTrue($caught, 'Exception was not thrown!');
     }
@@ -401,8 +401,8 @@ class ExpandTest extends \PHPUnit\Framework\TestCase
         }
         catch (InconsistentKeyTypes $exception) {
             $caught = true;
-            $this->assertContains('scheduler', $exception->getMessage());
-            $this->assertContains('from a non-array', $exception->getMessage());
+            $this->assertStringContainsString('scheduler', $exception->getMessage());
+            $this->assertStringContainsString('from a non-array', $exception->getMessage());
         }
         $this->assertTrue($caught, 'Exception was not thrown!');
     }

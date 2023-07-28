@@ -16,12 +16,10 @@ class InconsistentKeyTypesTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull(new InconsistentKeyTypes('foo',  array('bar'), 'foo.bar'));
     }
 
-    /**
-     * @expectedException \Best\DotNotation\InconsistentKeyTypes
-     * @expectedExceptionMessageRegExp /Attempting to change key 'foo.bar' from a non-array to an array/
-     */
     public function testDefaultErrorMessage()
     {
+        $this->expectException(\Best\DotNotation\InconsistentKeyTypes::class);
+        $this->expectExceptionMessageMatches('/Attempting to change key \'foo.bar\' from a non-array to an array/');
         throw new InconsistentKeyTypes('bar', array('baz'), 'foo.bar');
     }
 }
