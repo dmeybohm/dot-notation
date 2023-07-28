@@ -15,10 +15,10 @@ class BadKeyPath extends Exception
      * @param mixed $keyPath
      * @param string $message
      */
-    public function __construct($keyPath, $message = "")
+    public function __construct($keyPath, string $message = "")
     {
         $this->keyPath = $keyPath;
-        parent::__construct($message ?: $this->defaultMessage());
+        parent::__construct($message === "" ? $this->defaultMessage() : $message);
     }
 
     /**

@@ -17,5 +17,4 @@ class BadKeyPathTypeTest extends \PHPUnit\Framework\TestCase
         $this->expectExceptionMessageMatches('/Variable is not a string or int.*true/');
         throw new BadKeyPath(true);
     }
-
 }
