@@ -15,7 +15,7 @@ final class KeyNotFound extends Exception
      * @param string $keyPath
      * @param string $message
      */
-    public function __construct($keyPath, $message = "")
+    public function __construct($keyPath, string $message = "")
     {
         $this->keyPath = $keyPath;
         parent::__construct($message ?: $this->defaultMessage());

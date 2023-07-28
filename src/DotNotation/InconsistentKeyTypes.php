@@ -27,7 +27,7 @@ final class InconsistentKeyTypes extends Exception
      * @param string $parentKeyPath
      * @param string $message
      */
-    public function __construct($originalValue, $newValue, $parentKeyPath, $message = "")
+    public function __construct($originalValue, $newValue, $parentKeyPath, string $message = "")
     {
         $this->originalValue = $originalValue;
         $this->newValue = $newValue;

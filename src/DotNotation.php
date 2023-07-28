@@ -473,7 +473,7 @@ final class DotNotation
      *
      * @throws \Best\DotNotation\InconsistentKeyTypes if a key that already exists is changed to an
      *         array, or if an array is changed to a string.
-     * @return array The merged values as an array, or the second value if both are scalars.
+     * @return mixed The merged values as an array, or the second value if both are scalars.
      */
     private static function mergeTwoValues($originalValue, $newValue, $parentKeys)
     {

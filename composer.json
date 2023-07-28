@@ -19,7 +19,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Best\\DotNotation\\Test\\": "test/"
+            "Best\\DotNotation\\Test\\": "tests/"
         }
     },
     "require": {

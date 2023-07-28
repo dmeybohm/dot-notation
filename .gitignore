@@ -3,3 +3,4 @@ dot-notation.iml
 .idea
 .DS_Store
 composer.lock
+.phpunit.result.cache

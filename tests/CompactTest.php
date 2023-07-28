@@ -140,5 +140,4 @@ class CompactTest extends TestCase
             ),
         );
     }
-
 }

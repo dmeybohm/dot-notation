@@ -32,5 +32,9 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Run phpstan
+      run: vendor/bin/phpstan analyse --level 5 src
+
     - name: Run test suite
       run: vendor/bin/phpunit
+
