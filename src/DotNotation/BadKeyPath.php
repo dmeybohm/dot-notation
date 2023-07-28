@@ -18,7 +18,7 @@ class BadKeyPath extends Exception
     public function __construct($keyPath, string $message = "")
     {
         $this->keyPath = $keyPath;
-        parent::__construct($message === "" ? $this->defaultMessage() : $message);
+        parent::__construct($message ?: $this->defaultMessage());
     }
 
     /**
@@ -40,5 +40,4 @@ class BadKeyPath extends Exception
     {
         return 'Variable is not a string or int: ' . var_export($this->keyPath, true);
     }
-
 }
