@@ -14,7 +14,35 @@ composer require best/dot-notation
 
 This package has a single class with static methods, `\Best\DotNotation`.
 
-These methods all take an array as their first argument, and most then a "key path" as their
+There are two main groups of methods: those that operate recursively 
+across an entire array, and those that get/set values from such arrays.
+
+### Recursive methods
+
+For the recursive methods, you can use `expand` and `compact` methods to convert
+the dots from the expanded form and the compact form, and these operations are
+inverses of each other:
+
+```php
+use Best\DotNotation;
+
+$array = DotNotation::compact(array(
+  'my' => array(
+      'dotted' ==> array(
+          'key' => 'value'
+      )
+  )
+));
+// returns the dotted array:
+array('my.dotted.key' => 'value');
+
+// convert back to the other form:
+$original = DotNotation::expand(['my.dotted.key' => 'value']);
+```
+
+### Get/set values
+
+For the other methods, pass an array as their first argument, and most then a "key path" as their
 second argument, that determines which keys on the array to operate on.
 
 The key path can include dots to indicate subkeys of arrays to access.
