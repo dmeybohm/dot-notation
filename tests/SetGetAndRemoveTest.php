@@ -47,19 +47,17 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideInvalidKeyPath
-     * @expectedException \Best\DotNotation\BadKeyPath
      */
     public function testGetThrowsBadKeyPath($keyPath)
     {
+        $this->expectException(\Best\DotNotation\BadKeyPath::class);
         $arrayOne = array('foo' => array('baz' => 'cheese'));
         $this->assertEquals('cheese', DotNotation::get($arrayOne, $keyPath));
     }
 
-    /**
-     * @expectedException \Best\DotNotation\KeyNotFound
-     */
     public function testGetThrowsKeyNotFound()
     {
+        $this->expectException(\Best\DotNotation\KeyNotFound::class);
         $arrayOne = array('foo' => array('baz' => 'cheese'));
         $this->assertEquals('cheese', DotNotation::get($arrayOne, 'foo.undefined'));
     }
@@ -157,28 +155,24 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider provideInvalidKeyPath
-     * @expectedException \Best\DotNotation\BadKeyPath
      */
     public function testSetThrowsBadKeyPathIfKeyPathIsNotAnIntegerOrString($keyPath)
     {
+        $this->expectException(\Best\DotNotation\BadKeyPath::class);
         $arrayIntoArray = array('foo' => array('bar' => 'cheese'));
         DotNotation::set($arrayIntoArray, $keyPath, array('into array'));
     }
 
-    /**
-     * @expectedException \Best\DotNotation\InconsistentKeyTypes
-     */
     public function testSetThrowsInconsistentKeyTypesIfNonArrayKeyIsSet()
     {
+        $this->expectException(\Best\DotNotation\InconsistentKeyTypes::class);
         $data = array('foo' => array('bar' => true));
         DotNotation::set($data, 'foo.bar.cheese', 'mozzarella');
     }
 
-    /**
-     * @expectedException \Best\DotNotation\InconsistentKeyTypes
-     */
     public function testSetThrowsKeyAlreadyExistsIfSubKeyIsNotAnArray()
     {
+        $this->expectException(\Best\DotNotation\InconsistentKeyTypes::class);
         $array = array('foo' => array('non_array' => true, 'bar' => 'cheese'));
         DotNotation::set($array, 'foo.non_array.cheese', array('into array'));
     }
@@ -254,20 +248,16 @@ class SetGetAndRemoveTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    /**
-     * @expectedException \Best\DotNotation\KeyNotFound
-     */
     public function testRemoveThrowsKeyNotFoundIfMissingValueIsAttemptedToBeRemoved()
     {
+        $this->expectException(\Best\DotNotation\KeyNotFound::class);
         $array = array('foo' => array('array' => array('something else' => 'into another')));
         DotNotation::remove($array, 'foo.array.0.something else');
     }
 
-    /**
-     * @expectedException \Best\DotNotation\KeyNotFound
-     */
     public function testRemoveThrowsKeyNotFoundIfKeyDoesNotExist()
     {
+        $this->expectException(\Best\DotNotation\KeyNotFound::class);
         $array = array('foo' => array('array' => array('something else' => 'into another')));
         DotNotation::remove($array, 'undefined');
     }

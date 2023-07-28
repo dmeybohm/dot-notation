@@ -16,12 +16,10 @@ class KeyNotFoundTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull(new KeyNotFound('foo.bar'));
     }
 
-    /**
-     * @expectedException \Best\DotNotation\KeyNotFound
-     * @expectedExceptionMessageRegExp /Key path 'foo.bar' not found/
-     */
     public function testKeyNotFoundHasDefaultMessage()
     {
+        $this->expectException(\Best\DotNotation\KeyNotFound::class);
+        $this->expectExceptionMessageMatches('/Key path \'foo.bar\' not found/');
         throw new KeyNotFound('foo.bar');
     }
 

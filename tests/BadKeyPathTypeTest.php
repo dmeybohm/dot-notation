@@ -11,12 +11,10 @@ class BadKeyPathTypeTest extends \PHPUnit\Framework\TestCase
         $this->assertNotNull(new BadKeyPath('hello'));
     }
 
-    /**
-     * @expectedException \Best\DotNotation\BadKeyPath
-     * @expectedExceptionMessageRegExp /Variable is not a string or int.*true/
-     */
     public function testThrowingExceptionContainsDefaultMessage()
     {
+        $this->expectException(\Best\DotNotation\BadKeyPath::class);
+        $this->expectExceptionMessageMatches('/Variable is not a string or int.*true/');
         throw new BadKeyPath(true);
     }
 
